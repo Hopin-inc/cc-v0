@@ -1,0 +1,32 @@
+.vis-network:focus {
+  outline: none;
+}
+
+.vis-network {
+  position: relative;
+  z-index: 1;
+}
+
+.role-legend {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.5rem;
+  margin-top: 1rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+
+.role-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+
+.role-color {
+  width: 1rem;
+  height: 1rem;
+  margin-right: 0.5rem;
+  border: 1px solid #000;
+  border-radius: 9999px;
+}
+

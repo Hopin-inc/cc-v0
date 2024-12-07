@@ -1,0 +1,13 @@
+import { ActivitySubmissionForm } from "@/features/activity";
+import { IntegratedFeed } from "@/features/feed/IntegratedFeed";
+import { ProjectOverviewCard } from "@/features/project";
+
+export default function Home() {
+  return (
+    <div className="mt-4 pb-20">
+      <ProjectOverviewCard />
+      <IntegratedFeed />
+      <ActivitySubmissionForm />
+    </div>
+  );
+}
