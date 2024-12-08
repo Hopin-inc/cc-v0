@@ -10,7 +10,8 @@ type RecruitmentFeedItemProps = {
 
 export function RecruitmentFeedItem({ item }: RecruitmentFeedItemProps) {
   const { title, content, date, location, created_by } = item;
-  const { comments, addComment, isLoading } = useActivityComments(item.id);
+  const { comments, addComment, isLoading, updateComment, deleteComment } =
+    useActivityComments(item.id);
 
   return (
     <div>
@@ -33,6 +34,8 @@ export function RecruitmentFeedItem({ item }: RecruitmentFeedItemProps) {
           }
           comments={comments}
           onAddComment={addComment}
+          onUpdateComment={updateComment}
+          onDeleteComment={deleteComment}
           isLoading={isLoading}
         />
       </div>

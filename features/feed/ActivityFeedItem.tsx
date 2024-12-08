@@ -18,7 +18,8 @@ export function ActivityFeedItem({
   layout = "default",
 }: ActivityFeedItemProps) {
   const { user_contributions, title, content, date, location } = item;
-  const { comments, addComment, isLoading } = useActivityComments(item.id);
+  const { comments, addComment, isLoading, updateComment, deleteComment } =
+    useActivityComments(item.id);
   const photos = user_contributions.flatMap(
     (contribution) => contribution.user_photos
   );
@@ -100,6 +101,8 @@ export function ActivityFeedItem({
               thumbnailUrl: user.thumbnail_url || undefined,
             }))}
             comments={comments}
+            onUpdateComment={updateComment}
+            onDeleteComment={deleteComment}
             onAddComment={addComment}
             isLoading={isLoading}
           />

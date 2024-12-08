@@ -50,10 +50,49 @@ export const commentsService = {
       )
       .returns<Comment>()
       .single();
+
     if (error) {
       throw new Error("Failed to add comment");
     }
 
     return comment;
+  },
+
+  updateComment: async (commentId: string, content: string) => {
+    const supabase = createSupabaseClient();
+    const { data: comment, error } = await supabase
+      .from("user_activity_comment")
+      .update({ content })
+      .eq("id", commentId)
+      .select(
+        `
+        *,
+        users:user_id (
+          id,
+          name,
+          thumbnail_url
+        )
+      `
+      )
+      .returns<Comment>()
+      .single();
+
+    if (error) {
+      throw new Error("Failed to update comment");
+    }
+
+    return comment;
+  },
+
+  deleteComment: async (commentId: string) => {
+    const supabase = createSupabaseClient();
+    const { error } = await supabase
+      .from("user_activity_comment")
+      .delete()
+      .eq("id", commentId);
+
+    if (error) {
+      throw new Error("Failed to delete comment");
+    }
   },
 };

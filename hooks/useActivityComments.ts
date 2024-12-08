@@ -41,6 +41,35 @@ export function useActivityComments(activityId: string) {
     }
   };
 
+  const updateComment = async (commentId: string, content: string) => {
+    try {
+      const updatedComment = await commentsService.updateComment(
+        commentId,
+        content
+      );
+      setComments((prev) =>
+        prev.map((comment) =>
+          comment.id === commentId ? updatedComment : comment
+        )
+      );
+      toast.success("コメントを更新しました");
+    } catch (error) {
+      console.error("Failed to update comment:", error);
+      toast.error("コメントの更新に失敗しました");
+    }
+  };
+
+  const deleteComment = async (commentId: string) => {
+    try {
+      await commentsService.deleteComment(commentId);
+      setComments((prev) => prev.filter((comment) => comment.id !== commentId));
+      toast.success("コメントを削除しました");
+    } catch (error) {
+      console.error("Failed to delete comment:", error);
+      toast.error("コメントの削除に失敗しました");
+    }
+  };
+
   useEffect(() => {
     loadComments();
   }, [activityId]);
@@ -48,6 +77,8 @@ export function useActivityComments(activityId: string) {
   return {
     comments,
     addComment,
+    updateComment,
+    deleteComment,
     isLoading,
   };
 }
