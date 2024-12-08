@@ -2,9 +2,10 @@
 
 import { Card } from "@/components/ui/card";
 import { useFeedState } from "@/hooks/useFeedState";
+import { useCurrentProjectContext } from "@/contexts/ProjectContext";
+import CountUp from "react-countup";
 import { calculateTotalParticipants } from "@/utils/calculateTotalParticipants";
 import { useProjectPoints } from "@/hooks/useProjectPoints";
-import { useCurrentProjectContext } from "@/contexts/ProjectContext";
 import { Users, Award } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -25,7 +26,7 @@ export function ProjectStats() {
     },
     {
       title: "総配布ポイント数",
-      value: isLoading ? "-" : totalPoints,
+      value: isLoading ? 0 : totalPoints,
       unit: "pt",
       icon: Award,
       isLoading,
@@ -45,16 +46,19 @@ export function ProjectStats() {
             </p>
           </div>
           <div className="mt-1 pl-9 mb-1">
-            <div className="text-lg font-bold text-foreground flex items-baseline">
-              {" "}
+            <div className="text-base font-bold text-foreground flex items-baseline">
               {stat.isLoading ? (
                 <Skeleton className="h-6 w-16" />
               ) : (
-                stat.value.toLocaleString()
+                <CountUp
+                  end={stat.value}
+                  duration={2}
+                  separator=","
+                  suffix={stat.unit}
+                  enableScrollSpy
+                  scrollSpyOnce
+                />
               )}
-              <span className="text-xs font-normal text-muted-foreground ml-1">
-                {stat.unit}
-              </span>
             </div>
             {/* <p className="text-sm font-medium text-green-600">
               {" "}

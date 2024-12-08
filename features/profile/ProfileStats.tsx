@@ -1,8 +1,11 @@
+"use client";
+
 import { Card } from "@/components/ui/card";
 import { Award, LucideIcon, Star } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Badge as BadgeType, UserProfile } from "@/types";
 import { useCurrentUserContext } from "@/contexts/UserContext";
+import CountUp from "react-countup";
 
 interface StatItem {
   label: string;
@@ -98,16 +101,35 @@ export function ProfileStats({ userProfile, isLoading }: ProfileStatsProps) {
             )}
             {stat.type === "points" && (
               <div>
-                <div className="text-base font-bold text-foreground">
-                  {stat.value.toLocaleString()}
-                  <span className="text-xs font-normal text-muted-foreground ml-1">
-                    {stat.unit}
-                  </span>
+                <div className="text-base font-bold text-foreground flex items-baseline">
+                  <CountUp
+                    end={stat.value}
+                    duration={2}
+                    separator=","
+                    suffix={stat.unit}
+                    enableScrollSpy
+                    scrollSpyOnce
+                  />
                 </div>
-                <p className="text-xs text-muted-foreground mt-1">
-                  総獲得: {stat.items[0].value.toLocaleString()}
-                  {stat.unit}
-                </p>
+                <div className="text-xs text-muted-foreground mt-1">
+                  {stat.items.map((item, itemIndex) => (
+                    <div
+                      key={itemIndex}
+                      className="flex items-baseline gap-x-1"
+                    >
+                      <span>{item.label}</span>
+                      <CountUp
+                        end={item.value}
+                        duration={2}
+                        separator=","
+                        suffix={stat.unit}
+                        enableScrollSpy
+                        scrollSpyOnce
+                        className="font-medium"
+                      />
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </div>
