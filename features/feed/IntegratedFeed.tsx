@@ -22,7 +22,9 @@ export function IntegratedFeed() {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-2xl font-semibold mb-4">最近の動向</h2>
+      <h2 className="text-xl font-semibold text-muted-foreground mb-4">
+        最近の動向
+      </h2>
       {isLoading ? (
         <FeedSkeleton />
       ) : (

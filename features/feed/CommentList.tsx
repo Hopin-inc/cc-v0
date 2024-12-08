@@ -75,7 +75,7 @@ export function CommentList({
               <div className="flex items-center gap-2">
                 <Link href={`/u/${comment.users?.id || ""}`}>
                   <span
-                    className={`text-sm font-medium hover:underline ${
+                    className={`text-sm font-medium text-muted-foreground hover:underline ${
                       hoveredUserId === comment.users?.id ? "underline" : ""
                     }`}
                     onMouseEnter={() => setHoveredUserId(comment.users?.id)}

@@ -54,7 +54,9 @@ export function ProjectParticipants() {
   return (
     <Card className="w-full">
       <CardHeader className="flex flex-row items-center justify-between py-4">
-        <CardTitle className="text-xl font-semibold">関係者マップ</CardTitle>
+        <CardTitle className="text-xl font-semibold text-muted-foreground">
+          関係者マップ
+        </CardTitle>
         <Select value={selectedYear} onValueChange={handleYearChange}>
           <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="年を選択" />

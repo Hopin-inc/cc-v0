@@ -59,12 +59,12 @@ export function ProjectDescription({
   return (
     <Card>
       <CardHeader className="py-4">
-        <CardTitle className="text-xl font-semibold">
+        <CardTitle className="text-xl text-muted-foreground font-semibold">
           プロジェクト概要
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <p className="text-base text-muted-foreground mb-4">
+        <p className="text-base text-foreground mb-4">
           {project?.description || DEFAULT_PROJECT.description}
         </p>
         <div className="flex items-center justify-between mt-4">

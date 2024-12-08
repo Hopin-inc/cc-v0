@@ -12,8 +12,8 @@ export function ProjectOverviewCard() {
           href="/project"
           className="flex items-center justify-end pb-2 group transition-transform duration-200 hover:-translate-y-0.5"
         >
-          <span className="text-sm font-medium text-muted-foreground group-hover:text-primary group-hover:text-bold mr-1">
-            プロジェクト詳細を見る
+          <span className="text-sm font-medium text-muted-foreground group-hover:text-primary group-hover:underline mr-1">
+            プロジェクト詳細
           </span>
           <ArrowRight className="h-4 w-4 text-primary" />
         </Link>

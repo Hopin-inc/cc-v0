@@ -90,7 +90,7 @@ export function RecruitmentFeedItem({ item }: RecruitmentFeedItemProps) {
     <div>
       <FeedItemHeader type="recruitment" />
       <div className="space-y-2">
-        <FeedItemContent title={title} content={content} />
+        <FeedItemContent title={title} content={content} type="recruitment" />
         <FeedItemFooter
           date={date}
           location={location}
