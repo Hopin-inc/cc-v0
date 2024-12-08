@@ -9,6 +9,24 @@ const USER_CONTRIBUTIONS_SELECT_QUERY = `
 ` as const;
 
 export const userContributionsService = {
+  findExistingContribution: async (activityId: string, userId: string) => {
+    const supabase = createSupabaseClient();
+    const { data, error } = await supabase
+      .from("user_contributions")
+      .select("id")
+      .match({
+        activity_id: activityId,
+        user_id: userId,
+      })
+      .maybeSingle();
+
+    if (error) {
+      throw new Error("Failed to check existing contribution");
+    }
+
+    return data;
+  },
+
   create: async (
     contribution: TablesInsert<"user_contributions">
   ): Promise<UserContribution> => {

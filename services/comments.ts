@@ -1,5 +1,6 @@
 import { createSupabaseClient } from "./base";
 import { Comment } from "@/types";
+import { userContributionsService } from "./userContributions";
 
 export const commentsService = {
   fetchActivityComments: async (activityId: string) => {
@@ -29,6 +30,15 @@ export const commentsService = {
 
   addComment: async (activityId: string, userId: string, content: string) => {
     const supabase = createSupabaseClient();
+
+    // 1. まずactivityの情報を取得して、typeを確認
+    const { data: activity } = await supabase
+      .from("activities")
+      .select("type, project_id")
+      .eq("id", activityId)
+      .single();
+
+    // 2. コメントを追加
     const { data: comment, error } = await supabase
       .from("user_activity_comment")
       .insert([
@@ -53,6 +63,26 @@ export const commentsService = {
 
     if (error) {
       throw new Error("Failed to add comment");
+    }
+
+    // 3. ゆる募の場合、申請データを作成
+    if (activity?.type === "recruitment") {
+      const existingContribution =
+        await userContributionsService.findExistingContribution(
+          activityId,
+          userId
+        );
+
+      if (!existingContribution) {
+        // 申請データを作成（自動承認）
+        await userContributionsService.create({
+          activity_id: activityId,
+          user_id: userId,
+          status: "approved",
+          type_id: "57ee3bc7-76af-4b4d-8606-c648fc8ff860", // #NOTE: ひとまずフリーに
+          project_id: activity.project_id,
+        });
+      }
     }
 
     return comment;
