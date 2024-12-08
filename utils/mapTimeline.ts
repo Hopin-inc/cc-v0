@@ -35,6 +35,8 @@ export function generateTimelineFromFeed(
         description: item.content || "説明なし",
         images,
         participants,
+        location: item.location || undefined,
+        icon: item.icon || undefined,
       };
       return timelineItem;
     })

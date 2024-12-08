@@ -90,6 +90,8 @@ export type TimelineEvent = {
   description: string;
   images: string[];
   participants: TimelineParticipant[];
+  location?: string;
+  icon?: string;
 };
 
 // Activity types

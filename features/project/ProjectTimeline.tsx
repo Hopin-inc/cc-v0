@@ -9,7 +9,7 @@ import Link from "next/link";
 import { AvatarGroup } from "@/components/ui/avatar-group";
 import { formatDate } from "@/utils/date";
 import { formatContent } from "@/utils/formatContent";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, MapPin } from "lucide-react";
 
 export function ProjectTimeline() {
   const { feedItems } = useFeedState();
@@ -26,18 +26,31 @@ export function ProjectTimeline() {
             <div key={index} className="mb-8 relative">
               <div className="absolute -left-[6px] top-0 w-3.5 h-3.5 rounded-full bg-gray-300 border-2 border-background"></div>
               <div className="pl-4">
-                <span className="text-xs font-medium text-muted-foreground mb-1 block">
-                  {formatDate(event.date)}
-                </span>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-sm font-medium text-muted-foreground">
+                    {formatDate(event.date)}
+                  </span>
+                  {event.location && (
+                    <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                      <MapPin className="w-3.5 h-3.5" />
+                      <span>{event.location}</span>
+                    </div>
+                  )}
+                </div>
                 <Link
                   href={`/activities/${event.id}`}
                   className="group block p-4 rounded-lg hover:bg-muted/50 transition-colors"
                 >
                   <div className="flex items-center gap-2">
+                    {event.icon && (
+                      <span className="text-lg" role="img" aria-label="icon">
+                        {event.icon}
+                      </span>
+                    )}
                     <h3 className="text-lg font-semibold text-foreground group-hover:text-primary">
                       {event.title}
                     </h3>
-                    <ArrowUpRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                    <ArrowUpRight className="opacity-0 group-hover:opacity-100 w-4 h-4 text-primary transition-opacity" />
                   </div>
                   <p className="text-sm text-muted-foreground mt-1 whitespace-pre-wrap">
                     {formatContent(event.description)}
