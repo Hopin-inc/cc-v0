@@ -8,7 +8,7 @@ type ActivityPageProps = {
 
 export default function ActivityPage({ params }: ActivityPageProps) {
   return (
-    <main className="container py-8">
+    <main className="py-2">
       <ActivityDetail activityId={params.id} />
     </main>
   );

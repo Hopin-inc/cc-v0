@@ -29,7 +29,7 @@ export function ActivityDetail({ activityId }: ActivityDetailProps) {
 
   if (isLoading) {
     return (
-      <div className="space-y-4">
+      <div className="space-y-2">
         <Button
           variant="ghost"
           onClick={handleBack}
@@ -73,11 +73,7 @@ export function ActivityDetail({ activityId }: ActivityDetailProps) {
 
   return (
     <div className="space-y-4">
-      <Button
-        variant="ghost"
-        onClick={handleBack}
-        className="mb-4 -ml-2 gap-2"
-      >
+      <Button variant="ghost" onClick={handleBack} className="mb-4 -ml-2 gap-2">
         <ArrowLeft className="w-4 h-4" />
         戻る
       </Button>
