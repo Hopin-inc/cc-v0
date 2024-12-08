@@ -1,4 +1,6 @@
-import React, { useEffect } from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import {
   Dialog,
@@ -8,9 +10,12 @@ import {
 } from "@/components/ui/dialog";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { AvatarGroup } from "@/components/ui/avatar-group";
 import Link from "next/link";
 import { formatDate } from "@/utils/date";
+import { CommentList } from "@/features/feed/CommentList";
+import { CommentForm } from "@/features/feed/CommentForm";
+import { useActivityComments } from "@/hooks/useActivityComments";
+import { Comment } from "@/types";
 
 interface PhotoAlbumModalProps {
   isOpen: boolean;
@@ -27,6 +32,7 @@ interface PhotoAlbumModalProps {
   activityName: string;
   date: string | null;
   location: string | null;
+  activityId: string;
 }
 
 export function PhotoAlbumModal({
@@ -37,12 +43,62 @@ export function PhotoAlbumModal({
   activityName,
   date,
   location,
+  activityId,
 }: PhotoAlbumModalProps) {
+  const [newComment, setNewComment] = useState("");
+  const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
+  const [editingContent, setEditingContent] = useState("");
+
+  const { comments, addComment, updateComment, deleteComment } =
+    useActivityComments(activityId || "");
+
   useEffect(() => {
     if (isOpen) {
       window.scrollTo(0, 0);
     }
   }, [isOpen]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newComment.trim()) {
+      addComment(newComment.trim());
+      setNewComment("");
+    }
+  };
+
+  const handleEdit = (comment: Comment) => {
+    setEditingCommentId(comment.id);
+    setEditingContent(comment.content);
+  };
+
+  const handleUpdate = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (editingCommentId && editingContent.trim()) {
+      updateComment(editingCommentId, editingContent.trim());
+      setEditingCommentId(null);
+      setEditingContent("");
+    }
+  };
+
+  const handleDelete = (commentId: string) => {
+    if (window.confirm("このコメントを削除してもよろしいですか？")) {
+      deleteComment(commentId);
+    }
+  };
+
+  const handleKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    // ⌘ + Enter で送信
+    if (e.key === "Enter" && e.metaKey) {
+      e.preventDefault();
+      if (editingCommentId) {
+        handleUpdate(e);
+      } else {
+        handleSubmit(e);
+      }
+    }
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -58,7 +114,7 @@ export function PhotoAlbumModal({
           </div>
         </DialogHeader>
         <ScrollArea className="max-h-[70vh]">
-          <div className="px-6 space-y-8 pb-8">
+          <div className="px-6 space-y-8">
             {(photos ?? []).map((photo, index) => {
               const user = users?.find((u) => u.id === photo.user_id);
               return (
@@ -93,6 +149,38 @@ export function PhotoAlbumModal({
                 </div>
               );
             })}
+            <div className="border-t border-gray-100 pt-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold">コメント</h3>
+                <span className="text-sm text-muted-foreground">
+                  {comments.length}件
+                </span>
+              </div>
+              <div className="space-y-4">
+                <div className="mt-4 mb-8 space-y-4 pl-4 border-l-2 border-gray-100">
+                  <CommentList
+                    comments={comments}
+                    onEdit={handleEdit}
+                    onDelete={handleDelete}
+                    editingCommentId={editingCommentId}
+                    editingContent={editingContent}
+                    onEditingContentChange={setEditingContent}
+                    onUpdate={handleUpdate}
+                    onCancelEdit={() => {
+                      setEditingCommentId(null);
+                      setEditingContent("");
+                    }}
+                    onKeyDown={handleKeyDown}
+                  />
+                  <CommentForm
+                    value={newComment}
+                    onChange={setNewComment}
+                    onSubmit={handleSubmit}
+                    onKeyDown={handleKeyDown}
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </ScrollArea>
       </DialogContent>

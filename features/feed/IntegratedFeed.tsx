@@ -58,6 +58,7 @@ export function IntegratedFeed() {
               date={selectedActivity.date}
               location={selectedActivity.location}
               onClose={() => setSelectedActivityId(null)}
+              activityId={selectedActivity.id}
             />
           )}
         </>

@@ -1,17 +1,22 @@
+"use client";
+
 import { useState, useEffect } from "react";
 import { commentsService } from "@/services/comments";
 import { useCurrentUserContext } from "@/contexts/UserContext";
 import { toast } from "sonner";
 import { Comment } from "@/types";
 
-export function useActivityComments(activityId: string, initialComments?: Comment[]) {
+export function useActivityComments(
+  activityId: string,
+  initialComments?: Comment[]
+) {
   const [comments, setComments] = useState<Comment[]>(initialComments || []);
   const [isLoading, setIsLoading] = useState(!initialComments);
   const { currentUser } = useCurrentUserContext();
 
   const loadComments = async () => {
     if (initialComments) return;
-    
+
     try {
       const data = await commentsService.fetchActivityComments(activityId);
       setComments(data);

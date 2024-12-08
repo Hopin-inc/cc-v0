@@ -29,6 +29,7 @@ export function generateTimelineFromFeed(
         ).values()
       );
       const timelineItem: TimelineEvent = {
+        id: item.id,
         date: item.date || new Date().toISOString(),
         title: item.title || "タイトル未設定",
         description: item.content || "説明なし",

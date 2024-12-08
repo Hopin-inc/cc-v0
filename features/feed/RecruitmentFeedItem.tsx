@@ -1,3 +1,5 @@
+"use client";
+
 import { FeedItem } from "@/types";
 import { FeedItemHeader } from "./FeedItemHeader";
 import { FeedItemContent } from "./FeedItemContent";
@@ -10,8 +12,13 @@ type RecruitmentFeedItemProps = {
 
 export function RecruitmentFeedItem({ item }: RecruitmentFeedItemProps) {
   const { title, content, date, location, created_by, comments } = item;
-  const { comments: activityComments, addComment, isLoading, updateComment, deleteComment } =
-    useActivityComments(item.id, comments);
+  const {
+    comments: activityComments,
+    addComment,
+    isLoading,
+    updateComment,
+    deleteComment,
+  } = useActivityComments(item.id, comments);
 
   return (
     <div>

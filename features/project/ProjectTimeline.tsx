@@ -9,6 +9,7 @@ import Link from "next/link";
 import { AvatarGroup } from "@/components/ui/avatar-group";
 import { formatDate } from "@/utils/date";
 import { formatContent } from "@/utils/formatContent";
+import { ArrowUpRight } from "lucide-react";
 
 export function ProjectTimeline() {
   const { feedItems } = useFeedState();
@@ -28,44 +29,52 @@ export function ProjectTimeline() {
                 <span className="text-xs font-medium text-muted-foreground mb-1 block">
                   {formatDate(event.date)}
                 </span>
-                <h3 className="text-lg font-semibold text-foreground">
-                  {event.title}
-                </h3>
-                <p className="text-sm text-muted-foreground mt-1 whitespace-pre-wrap">
-                  {formatContent(event.description)}
-                </p>
-                {event.images.length > 0 && (
-                  <ScrollArea className="w-full whitespace-nowrap rounded-md border mt-4">
-                    <div className="flex w-max space-x-4 p-4">
-                      {event.images.map((image, imageIndex) => (
-                        <div
-                          key={imageIndex}
-                          className="overflow-hidden rounded-md shrink-0"
-                        >
-                          <Image
-                            src={image}
-                            alt={`Image ${imageIndex + 1}`}
-                            className="object-cover"
-                            width={200}
-                            height={200}
-                          />
-                        </div>
-                      ))}
-                    </div>
-                    <ScrollBar orientation="horizontal" />
-                  </ScrollArea>
-                )}
-                {event.participants.length > 0 && (
-                  <AvatarGroup
-                    users={event.participants.map((p) => ({
-                      id: p.userId,
-                      name: p.name,
-                      thumbnailUrl: p.thumbnailUrl,
-                    }))}
-                    limit={6}
-                    className="mt-4"
-                  />
-                )}
+                <Link
+                  href={`/activities/${event.id}`}
+                  className="group block p-4 rounded-lg hover:bg-muted/50 transition-colors"
+                >
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-lg font-semibold text-foreground group-hover:text-primary">
+                      {event.title}
+                    </h3>
+                    <ArrowUpRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
+                  </div>
+                  <p className="text-sm text-muted-foreground mt-1 whitespace-pre-wrap">
+                    {formatContent(event.description)}
+                  </p>
+                  {event.images.length > 0 && (
+                    <ScrollArea className="w-full whitespace-nowrap rounded-md border mt-4">
+                      <div className="flex w-max space-x-4 p-4">
+                        {event.images.map((image, imageIndex) => (
+                          <div
+                            key={imageIndex}
+                            className="overflow-hidden rounded-md shrink-0"
+                          >
+                            <Image
+                              src={image}
+                              alt={`Image ${imageIndex + 1}`}
+                              className="object-cover"
+                              width={200}
+                              height={200}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                      <ScrollBar orientation="horizontal" />
+                    </ScrollArea>
+                  )}
+                  {event.participants.length > 0 && (
+                    <AvatarGroup
+                      users={event.participants.map((p) => ({
+                        id: p.userId,
+                        name: p.name,
+                        thumbnailUrl: p.thumbnailUrl,
+                      }))}
+                      limit={6}
+                      className="mt-4"
+                    />
+                  )}
+                </Link>
               </div>
             </div>
           ))}

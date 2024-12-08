@@ -84,6 +84,7 @@ export type TimelineParticipant = {
 };
 
 export type TimelineEvent = {
+  id: string;
   date: string;
   title: string;
   description: string;
