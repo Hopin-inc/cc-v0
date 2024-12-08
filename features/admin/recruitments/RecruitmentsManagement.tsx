@@ -5,7 +5,7 @@ import { useAdminActivity } from "@/hooks/admin/useAdminActivity";
 import { useAdminActivityMutation } from "@/hooks/admin/useAdminActivityMutation";
 import { ActivityType, FeedItem } from "@/types";
 import { toast } from "sonner";
-import { ActivityDialog } from "./ActivityDialog";
+import { ActivityDialog } from "../activities/ActivityDialog";
 import {
   Table,
   TableBody,
@@ -21,17 +21,17 @@ import {
   ActivityFormState,
   createActivityFormFromActivity,
   initialActivityFormState,
-} from "./types";
+} from "../activities/types";
 import { formatDate } from "@/utils/date";
 
-export const ActivitiesManagement = () => {
+export const RecruitmentsManagement = () => {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [form, setForm] = useState<ActivityFormState>(initialActivityFormState);
   const [editingActivity, setEditingActivity] = useState<ActivityType | null>(
     null
   );
-  const [activities, setActivities] = useState<FeedItem[]>([]);
+  const [recruitments, setRecruitments] = useState<FeedItem[]>([]);
   const { currentProject } = useCurrentProject();
   const { currentUser } = useCurrentUserContext();
 
@@ -53,10 +53,9 @@ export const ActivitiesManagement = () => {
   const loadData = async () => {
     if (!currentProject?.id) return;
     try {
-      const data = await fetchAll(currentProject.id);
-  
+      const data = await fetchAll(currentProject.id, "recruitment");
       // @ts-ignore
-      setActivities(data);
+      setRecruitments(data);
     } catch (error) {
       console.error("Failed to load data:", error);
       toast.error("データの読み込みに失敗しました");
@@ -76,15 +75,16 @@ export const ActivitiesManagement = () => {
         date: form.date ?? "",
         location: form.location ?? "",
         project_id: currentProject.id,
+        type: "recruitment",
         created_by_user_id: currentUser.id,
       });
       setIsCreateDialogOpen(false);
       resetForm();
       loadData();
-      toast.success("活動を作成しました");
+      toast.success("ゆる募を作成しました");
     } catch (error) {
-      console.error("Failed to create activity:", error);
-      toast.error("活動を作成できませんでした");
+      console.error("Failed to create recruitment:", error);
+      toast.error("ゆる募を作成できませんでした");
     }
   };
 
@@ -100,15 +100,16 @@ export const ActivitiesManagement = () => {
         content: form.content ?? undefined,
         date: form.date ?? undefined,
         location: form.location ?? undefined,
+        type: "recruitment",
       });
       setIsEditDialogOpen(false);
       setEditingActivity(null);
       resetForm();
       loadData();
-      toast.success("活動を更新しました");
+      toast.success("ゆる募を更新しました");
     } catch (error) {
-      console.error("Failed to update activity:", error);
-      toast.error("活動を更新できませんでした");
+      console.error("Failed to update recruitment:", error);
+      toast.error("ゆる募を更新できませんでした");
     }
   };
 
@@ -118,10 +119,10 @@ export const ActivitiesManagement = () => {
     try {
       await remove(id);
       loadData();
-      toast.success("活動を削除しました");
+      toast.success("ゆる募を削除しました");
     } catch (error) {
-      console.error("Failed to delete activity:", error);
-      toast.error("活動を削除できませんでした");
+      console.error("Failed to delete recruitment:", error);
+      toast.error("ゆる募を削除できませんでした");
     }
   };
 
@@ -142,7 +143,7 @@ export const ActivitiesManagement = () => {
   return (
     <div className="space-y-8">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold">活動管理</h2>
+        <h2 className="text-2xl font-bold">ゆる募管理</h2>
         <Button onClick={() => setIsCreateDialogOpen(true)}>新規作成</Button>
       </div>
 
@@ -159,15 +160,13 @@ export const ActivitiesManagement = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {activities.map((activity) => (
+            {recruitments.map((activity) => (
               <TableRow key={activity.id}>
                 <TableCell>{activity.date}</TableCell>
                 <TableCell>{activity.title}</TableCell>
                 <TableCell>{activity.content}</TableCell>
                 <TableCell>{activity.location}</TableCell>
-                <TableCell>
-                  {formatDate(activity.created_at)}
-                </TableCell>
+                <TableCell>{formatDate(activity.created_at)}</TableCell>
                 <TableCell className="text-right space-x-2">
                   <Button
                     variant="outline"
@@ -198,6 +197,7 @@ export const ActivitiesManagement = () => {
         onFormChange={(changes) => setForm((prev) => ({ ...prev, ...changes }))}
         onSubmit={handleCreate}
         isLoading={isMutationLoading}
+        type="recruitment"
       />
 
       {editingActivity && (
@@ -212,6 +212,7 @@ export const ActivitiesManagement = () => {
           onSubmit={handleEdit}
           isLoading={isMutationLoading}
           activity={editingActivity}
+          type="recruitment"
         />
       )}
     </div>

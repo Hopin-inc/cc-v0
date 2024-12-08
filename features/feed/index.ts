@@ -1,4 +1,3 @@
-export * from "@/features/feed/ActivityFeed";
 export * from "@/features/feed/ActivityFeedItem";
 export * from "@/features/feed/AnnouncementFeedItem";
 export * from "@/features/feed/CommentSection";

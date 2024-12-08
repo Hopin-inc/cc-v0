@@ -3,13 +3,19 @@ import { TablesInsert, TablesUpdate } from "@/types/supabase";
 import { createSupabaseClient } from "../base";
 
 export const adminActivitiesService = {
-  fetchAll: async (projectId: string): Promise<Activity[]> => {
+  fetchAll: async (projectId: string, type?: string): Promise<Activity[]> => {
     const supabase = createSupabaseClient();
-    const { data, error } = await supabase
+    const query = supabase
       .from("activities")
       .select("*")
       .eq("project_id", projectId)
       .order("created_at", { ascending: false });
+
+    if (type) {
+      query.eq("type", type);
+    }
+
+    const { data, error } = await query;
 
     if (error) {
       throw new Error("Failed to fetch activities");
@@ -29,7 +35,7 @@ export const adminActivitiesService = {
 
   update: async (
     id: string,
-    input: TablesUpdate<"activities">
+    input: Partial<TablesUpdate<"activities">>
   ): Promise<void> => {
     const supabase = createSupabaseClient();
     const { error } = await supabase

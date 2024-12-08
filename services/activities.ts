@@ -7,7 +7,8 @@ const ACTIVITIES_SELECT_QUERY = `
     *,
     users (*),
     user_photos (*)
-  )
+  ),
+  created_by:users!created_by_user_id(*)
 ` as const;
 
 export const activitiesService = {
@@ -38,7 +39,9 @@ export const activitiesService = {
 
   fetchFeedItems: async (): Promise<FeedItem[]> => {
     const supabase = createSupabaseClient();
-    const { data: activities, error } = await supabase
+    
+    // 承認済みの活動を取得
+    const { data: activities, error: activitiesError } = await supabase
       .from("activities")
       .select(`${ACTIVITIES_SELECT_QUERY}`)
       .match({
@@ -46,13 +49,32 @@ export const activitiesService = {
         "user_contributions.status": "approved",
       })
       .not("user_contributions", "is", null)
-      .order("date", { ascending: false })
-      .returns<FeedItem[]>();
+      .order("date", { ascending: false });
 
-    if (error) {
-      throw new Error("Failed to fetch feed items");
+    if (activitiesError) {
+      throw new Error("Failed to fetch activities");
     }
 
-    return activities;
+    // ゆる募を取得
+    const { data: recruitments, error: recruitmentsError } = await supabase
+      .from("activities")
+      .select(`${ACTIVITIES_SELECT_QUERY}`)
+      .eq("type", "recruitment")
+      .order("date", { ascending: false });
+
+    if (recruitmentsError) {
+      throw new Error("Failed to fetch recruitments");
+    }
+
+    // 活動とゆる募を日付でソート
+    const allItems = [...(activities ?? []), ...(recruitments ?? [])].sort(
+      (a, b) => {
+        const dateA = a.date ? new Date(a.date) : new Date(a.created_at);
+        const dateB = b.date ? new Date(b.date) : new Date(b.created_at);
+        return dateB.getTime() - dateA.getTime();
+      }
+    );
+
+    return allItems;
   },
 };

@@ -20,6 +20,10 @@ const sidebarItems = [
     href: "/admin/activities",
   },
   {
+    label: "ゆる募管理",
+    href: "/admin/recruitments",
+  },
+  {
     label: "活動種別管理",
     href: "/admin/contribution-types",
   },

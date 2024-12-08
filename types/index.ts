@@ -43,6 +43,7 @@ export type FeedItem = ActivityType & {
       users: User;
     }
   >;
+  created_by?: User;
 };
 
 export type NotificationType =

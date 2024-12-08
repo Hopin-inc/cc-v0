@@ -1,19 +1,20 @@
 "use client";
 
+import { ActivityType } from "@/types";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
   DialogFooter,
+  DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { ActivityType } from "@/types";
 import { ActivityFormState } from "./types";
 
-interface ActivityDialogProps {
+type ActivityDialogProps = {
   mode: "create" | "edit";
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
@@ -22,7 +23,18 @@ interface ActivityDialogProps {
   onSubmit: () => void;
   isLoading: boolean;
   activity?: ActivityType;
-}
+  type?: "activity" | "recruitment";
+};
+
+const getDialogTitle = (mode: "create" | "edit", type: "activity" | "recruitment" = "activity") => {
+  const typeText = type === "recruitment" ? "ゆる募" : "活動";
+  return `${typeText}の${mode === "create" ? "新規作成" : "編集"}`;
+};
+
+const getPlaceholderText = (field: "title" | "content", type: "activity" | "recruitment" = "activity") => {
+  const typeText = type === "recruitment" ? "ゆる募" : "活動";
+  return `${typeText}の${field === "title" ? "タイトル" : "内容"}を入力してください`;
+};
 
 export function ActivityDialog({
   mode,
@@ -32,39 +44,36 @@ export function ActivityDialog({
   onFormChange,
   onSubmit,
   isLoading,
+  activity,
+  type = "activity",
 }: ActivityDialogProps) {
-  const isEdit = mode === "edit";
-  const dialogTitle = isEdit ? "活動を編集" : "活動を作成";
-  const buttonText = isEdit ? "更新" : "作成";
-  const loadingText = isEdit ? "更新中..." : "作成中...";
-
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{dialogTitle}</DialogTitle>
+          <DialogTitle>{getDialogTitle(mode, type)}</DialogTitle>
         </DialogHeader>
-        <div className="grid gap-4 py-4">
-          <div className="grid gap-2">
-            <label htmlFor="title">タイトル</label>
+        <div className="space-y-4 py-4">
+          <div className="space-y-2">
+            <Label htmlFor="title">タイトル</Label>
             <Input
               id="title"
               value={form.title}
               onChange={(e) => onFormChange({ title: e.target.value })}
-              placeholder="活動のタイトルを入力"
+              placeholder={getPlaceholderText("title", type)}
             />
           </div>
-          <div className="grid gap-2">
-            <label htmlFor="content">内容</label>
+          <div className="space-y-2">
+            <Label htmlFor="content">内容</Label>
             <Textarea
               id="content"
               value={form.content}
               onChange={(e) => onFormChange({ content: e.target.value })}
-              placeholder="活動の内容を入力"
+              placeholder={getPlaceholderText("content", type)}
             />
           </div>
-          <div className="grid gap-2">
-            <label htmlFor="date">日付</label>
+          <div className="space-y-2">
+            <Label htmlFor="date">日付</Label>
             <Input
               id="date"
               type="date"
@@ -72,19 +81,26 @@ export function ActivityDialog({
               onChange={(e) => onFormChange({ date: e.target.value })}
             />
           </div>
-          <div className="grid gap-2">
-            <label htmlFor="location">場所</label>
+          <div className="space-y-2">
+            <Label htmlFor="location">場所</Label>
             <Input
               id="location"
               value={form.location}
               onChange={(e) => onFormChange({ location: e.target.value })}
-              placeholder="活動の場所を入力"
+              placeholder="場所を入力してください"
             />
           </div>
         </div>
         <DialogFooter>
+          <Button
+            variant="outline"
+            onClick={() => onOpenChange(false)}
+            disabled={isLoading}
+          >
+            キャンセル
+          </Button>
           <Button onClick={onSubmit} disabled={isLoading}>
-            {isLoading ? loadingText : buttonText}
+            {mode === "create" ? "作成" : "更新"}
           </Button>
         </DialogFooter>
       </DialogContent>

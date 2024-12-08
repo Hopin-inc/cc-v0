@@ -13,6 +13,7 @@ export type Database = {
         Row: {
           content: string | null
           created_at: string
+          created_by_user_id: string | null
           date: string | null
           id: string
           location: string | null
@@ -23,6 +24,7 @@ export type Database = {
         Insert: {
           content?: string | null
           created_at?: string
+          created_by_user_id?: string | null
           date?: string | null
           id?: string
           location?: string | null
@@ -33,6 +35,7 @@ export type Database = {
         Update: {
           content?: string | null
           created_at?: string
+          created_by_user_id?: string | null
           date?: string | null
           id?: string
           location?: string | null
@@ -41,6 +44,13 @@ export type Database = {
           type?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "activities_created_by_user_id_fkey"
+            columns: ["created_by_user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "activities_project_id_fkey"
             columns: ["project_id"]
