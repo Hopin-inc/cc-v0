@@ -20,7 +20,7 @@ export const ActivitySubmissionForm: React.FC = () => {
   const {
     selectedType,
     setSelectedType,
-    setPhoto,
+    setPhotos,
     isSubmitted,
     isLoading,
     handleSubmit,
@@ -64,7 +64,7 @@ export const ActivitySubmissionForm: React.FC = () => {
                   onChange={setSelectedType}
                   conributionTypes={contributionTypes}
                 />
-                <PhotoUpload onPhotoChange={setPhoto} />
+                <PhotoUpload onPhotoChange={setPhotos} />
                 <Button
                   type="submit"
                   className="w-full"

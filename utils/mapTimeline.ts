@@ -36,7 +36,6 @@ export function generateTimelineFromFeed(
         images,
         participants,
         location: item.location || undefined,
-        icon: item.icon || undefined,
       };
       return timelineItem;
     })

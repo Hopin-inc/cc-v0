@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { useCurrentProjectContext } from "@/contexts/ProjectContext";
 import { useCurrentUserContext } from "@/contexts/UserContext";
@@ -7,7 +9,7 @@ import { usePhoto } from "@/hooks/usePhoto";
 import { toast } from "sonner";
 
 export const useActivitySubmission = () => {
-  const [photo, setPhoto] = useState<File | null>(null);
+  const [photos, setPhotos] = useState<File[]>([]);
   const [selectedType, setSelectedType] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
@@ -37,19 +39,21 @@ export const useActivitySubmission = () => {
         user_id: currentUser.id,
       });
 
-      let photoUrl: string | undefined;
-
-      if (photo) {
-        photoUrl = await uploadPhoto(photo, currentUser.id);
-      }
-
-      if (photoUrl && createdUserContribution) {
-        await savePhoto({
-          url: photoUrl,
-          project_id: currentProject.id,
-          user_contibution_id: createdUserContribution.id,
-          user_id: currentUser.id,
+      if (photos.length > 0 && createdUserContribution) {
+        // 写真を並行してアップロード
+        const uploadPromises = photos.map(async (photo) => {
+          const photoUrl = await uploadPhoto(photo, currentUser.id);
+          if (photoUrl) {
+            await savePhoto({
+              url: photoUrl,
+              project_id: currentProject.id,
+              user_contibution_id: createdUserContribution.id,
+              user_id: currentUser.id,
+            });
+          }
         });
+
+        await Promise.all(uploadPromises);
       }
 
       setIsSubmitted(true);
@@ -67,6 +71,7 @@ export const useActivitySubmission = () => {
 
   const resetForm = () => {
     setSelectedType("");
+    setPhotos([]);
     setIsSubmitted(false);
     setError(null);
   };
@@ -76,7 +81,7 @@ export const useActivitySubmission = () => {
     setSelectedType,
     isSubmitted,
     isLoading,
-    setPhoto,
+    setPhotos,
     error,
     handleSubmit,
     resetForm,
