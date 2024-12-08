@@ -1,12 +1,13 @@
 import { createSupabaseClient } from "./base";
 import { Comment } from "@/types";
 import { userContributionsService } from "./userContributions";
+import { TablesInsert } from "@/types/supabase";
 
 export const commentsService = {
   fetchActivityComments: async (activityId: string) => {
     const supabase = createSupabaseClient();
     const { data: comments, error } = await supabase
-      .from("user_activity_comment")
+      .from("user_activity_comments")
       .select(
         `
         *,
@@ -28,26 +29,20 @@ export const commentsService = {
     return comments;
   },
 
-  addComment: async (activityId: string, userId: string, content: string) => {
+  addComment: async (args: TablesInsert<"user_activity_comments">) => {
     const supabase = createSupabaseClient();
 
     // 1. まずactivityの情報を取得して、typeを確認
     const { data: activity } = await supabase
       .from("activities")
       .select("type, project_id")
-      .eq("id", activityId)
+      .eq("id", args.activity_id)
       .single();
 
     // 2. コメントを追加
     const { data: comment, error } = await supabase
-      .from("user_activity_comment")
-      .insert([
-        {
-          activity_id: activityId,
-          user_id: userId,
-          content,
-        },
-      ])
+      .from("user_activity_comments")
+      .insert([args])
       .select(
         `
         *,
@@ -69,18 +64,18 @@ export const commentsService = {
     if (activity?.type === "recruitment") {
       const existingContribution =
         await userContributionsService.findExistingContribution(
-          activityId,
-          userId
+          args.activity_id,
+          args.user_id
         );
 
       if (!existingContribution) {
         // 申請データを作成（自動承認）
         await userContributionsService.create({
-          activity_id: activityId,
-          user_id: userId,
+          activity_id: args.activity_id,
+          user_id: args.user_id,
           status: "approved",
           type_id: "57ee3bc7-76af-4b4d-8606-c648fc8ff860", // #NOTE: ひとまずフリーに
-          project_id: activity.project_id,
+          project_id: args.project_id,
         });
       }
     }
@@ -91,7 +86,7 @@ export const commentsService = {
   updateComment: async (commentId: string, content: string) => {
     const supabase = createSupabaseClient();
     const { data: comment, error } = await supabase
-      .from("user_activity_comment")
+      .from("user_activity_comments")
       .update({ content })
       .eq("id", commentId)
       .select(
@@ -117,7 +112,7 @@ export const commentsService = {
   deleteComment: async (commentId: string) => {
     const supabase = createSupabaseClient();
     const { error } = await supabase
-      .from("user_activity_comment")
+      .from("user_activity_comments")
       .delete()
       .eq("id", commentId);
 

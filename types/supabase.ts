@@ -55,7 +55,7 @@ export type Database = {
             foreignKeyName: "activities_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
-            referencedRelation: "project"
+            referencedRelation: "projects"
             referencedColumns: ["id"]
           },
         ]
@@ -141,7 +141,7 @@ export type Database = {
             foreignKeyName: "notifications_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
-            referencedRelation: "project"
+            referencedRelation: "projects"
             referencedColumns: ["id"]
           },
           {
@@ -152,27 +152,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      project: {
-        Row: {
-          created_at: string
-          description: string | null
-          id: string
-          name: string
-        }
-        Insert: {
-          created_at?: string
-          description?: string | null
-          id?: string
-          name: string
-        }
-        Update: {
-          created_at?: string
-          description?: string | null
-          id?: string
-          name?: string
-        }
-        Relationships: []
       }
       project_prize_items: {
         Row: {
@@ -207,17 +186,39 @@ export type Database = {
             foreignKeyName: "project_exchange_items_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
-            referencedRelation: "project"
+            referencedRelation: "projects"
             referencedColumns: ["id"]
           },
         ]
       }
-      user_activity_comment: {
+      projects: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      user_activity_comments: {
         Row: {
           activity_id: string
           content: string
           created_at: string
           id: string
+          project_id: string
           user_id: string
         }
         Insert: {
@@ -225,6 +226,7 @@ export type Database = {
           content: string
           created_at?: string
           id?: string
+          project_id: string
           user_id: string
         }
         Update: {
@@ -232,6 +234,7 @@ export type Database = {
           content?: string
           created_at?: string
           id?: string
+          project_id?: string
           user_id?: string
         }
         Relationships: [
@@ -247,6 +250,13 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_activity_comments_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
             referencedColumns: ["id"]
           },
         ]
@@ -341,7 +351,7 @@ export type Database = {
             foreignKeyName: "user_contributions_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
-            referencedRelation: "project"
+            referencedRelation: "projects"
             referencedColumns: ["id"]
           },
         ]
@@ -390,7 +400,7 @@ export type Database = {
             foreignKeyName: "user_photos_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
-            referencedRelation: "project"
+            referencedRelation: "projects"
             referencedColumns: ["id"]
           },
         ]
@@ -428,7 +438,7 @@ export type Database = {
             foreignKeyName: "user_point_transactions_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
-            referencedRelation: "project"
+            referencedRelation: "projects"
             referencedColumns: ["id"]
           },
           {
@@ -468,7 +478,7 @@ export type Database = {
             foreignKeyName: "user_projects_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
-            referencedRelation: "project"
+            referencedRelation: "projects"
             referencedColumns: ["id"]
           },
           {

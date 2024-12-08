@@ -2,7 +2,7 @@
 
 import { Tables } from "./supabase";
 
-export type ProjectType = Tables<"project">;
+export type ProjectType = Tables<"projects">;
 
 export type ContributionType = Tables<"contribution_types">;
 
@@ -25,7 +25,7 @@ export type UserProfile = User & {
   badges: Badge[];
 };
 
-export type Comment = Tables<"user_activity_comment"> & {
+export type Comment = Tables<"user_activity_comments"> & {
   users: User;
 };
 

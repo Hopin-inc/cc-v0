@@ -9,7 +9,7 @@ const ACTIVITIES_SELECT_QUERY = `
     user_photos (*)
   ),
   created_by:users!created_by_user_id(*),
-  comments:user_activity_comment (
+  comments:user_activity_comments (
     *,
     users:user_id (
       id,

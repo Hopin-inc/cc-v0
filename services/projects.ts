@@ -6,19 +6,18 @@ export const projectsService = {
     const supabase = createSupabaseClient();
 
     const { data, error } = await supabase
-      .from("project")
+      .from("projects")
       .select("*")
       .order("created_at", { ascending: true })
       // 便宜的に最新のプロジェクトを現在のプロジェクトとして取得
       .limit(1)
       .single();
-
     if (error || !data) {
       throw new Error("Failed to fetch user profile");
     }
 
     // Set the current project ID in a cookie for middleware
-    document.cookie = `current-project-id=${data.id}; path=/`;
+    document.cookie = `current-project-id=${data}; path=/`;
 
     return data;
   },

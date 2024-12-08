@@ -5,6 +5,7 @@ import { commentsService } from "@/services/comments";
 import { useCurrentUserContext } from "@/contexts/UserContext";
 import { toast } from "sonner";
 import { Comment } from "@/types";
+import { useCurrentProjectContext } from "@/contexts/ProjectContext";
 
 export function useActivityComments(
   activityId: string,
@@ -13,6 +14,7 @@ export function useActivityComments(
   const [comments, setComments] = useState<Comment[]>(initialComments || []);
   const [isLoading, setIsLoading] = useState(!initialComments);
   const { currentUser } = useCurrentUserContext();
+  const { currentProject } = useCurrentProjectContext();
 
   const loadComments = async () => {
     if (initialComments) return;
@@ -29,17 +31,18 @@ export function useActivityComments(
   };
 
   const addComment = async (content: string) => {
-    if (!currentUser?.id) {
+    if (!currentUser?.id || !currentProject?.id) {
       toast.error("コメントを追加するにはログインが必要です");
       return;
     }
 
     try {
-      const newComment = await commentsService.addComment(
-        activityId,
-        currentUser.id,
-        content
-      );
+      const newComment = await commentsService.addComment({
+        activity_id: activityId,
+        user_id: currentUser.id,
+        content,
+        project_id: currentProject.id,
+      });
       setComments((prev) => [...prev, newComment]);
       toast.success("コメントを追加しました");
     } catch (error) {
