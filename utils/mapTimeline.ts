@@ -1,4 +1,4 @@
-import { FeedItem, Participant, TimelineEvent } from "@/types";
+import { FeedItem, TimelineEvent } from "@/types";
 
 /**
  * フィードデータから活動年表のデータを生成する
@@ -10,7 +10,10 @@ export function generateTimelineFromFeed(
 ): TimelineEvent[] {
   return feedItems
     .filter(
-      (item) => item.user_contributions && item.user_contributions.length > 0
+      (item) =>
+        item.type === "contribution" &&
+        item.user_contributions &&
+        item.user_contributions.length > 0
     )
     .map((item) => {
       const images = item.user_contributions.flatMap((contribution) =>
@@ -34,7 +37,7 @@ export function generateTimelineFromFeed(
         title: item.title || "タイトル未設定",
         description: item.content || "説明なし",
         images,
-      participants,
+        participants,
         location: item.location || undefined,
       };
       return timelineItem;
