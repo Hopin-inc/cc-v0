@@ -25,13 +25,8 @@ export type UserProfile = User & {
   badges: Badge[];
 };
 
-export type Comment = {
-  id: number;
-  content: string;
-  user: {
-    name: string;
-    avatar: string;
-  };
+export type Comment = Tables<"user_activity_comment"> & {
+  users: User;
 };
 
 export type UserPointTransaction = Tables<"user_point_transactions">;

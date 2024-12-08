@@ -41,8 +41,6 @@ export function ProfileActivities({ userId }: ProfileActivitiesProps) {
     (activity) => activity.id === selectedActivityId
   );
 
-  console.debug({ activities });
-
   return (
     <div className="space-y-6 mt-6">
       <div className="flex justify-between items-center mb-4">

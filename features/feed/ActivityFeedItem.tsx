@@ -3,10 +3,8 @@ import { Maximize2 } from "lucide-react";
 import { FeedItemHeader } from "./FeedItemHeader";
 import { FeedItemContent } from "./FeedItemContent";
 import { FeedItemFooter } from "./FeedItemFooter";
-import { formatDate } from "@/utils/date";
-import { AvatarGroup } from "@/components/ui/avatar-group";
-import { formatContent } from "@/utils/formatContent";
 import Image from "next/image";
+import { useActivityComments } from "@/hooks/useActivityComments";
 
 type ActivityFeedItemProps = {
   item: FeedItem;
@@ -20,6 +18,7 @@ export function ActivityFeedItem({
   layout = "default",
 }: ActivityFeedItemProps) {
   const { user_contributions, title, content, date, location } = item;
+  const { comments, addComment, isLoading } = useActivityComments(item.id);
   const photos = user_contributions.flatMap(
     (contribution) => contribution.user_photos
   );
@@ -100,6 +99,9 @@ export function ActivityFeedItem({
               name: user.name || "名前未設定",
               thumbnailUrl: user.thumbnail_url || undefined,
             }))}
+            comments={comments}
+            onAddComment={addComment}
+            isLoading={isLoading}
           />
         </div>
       </div>
