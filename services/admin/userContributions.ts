@@ -1,6 +1,5 @@
 import { ContributionStatus, UserContribution } from "@/types";
 import { createSupabaseClient } from "../base";
-import { notificationsService } from "../notifications";
 
 export const adminUserContributionsService = {
   fetchAll: async (projectId: string): Promise<UserContribution[]> => {
@@ -104,18 +103,18 @@ export const adminUserContributionsService = {
         user_id: userId,
         project_id: projectId,
         point: points,
-        type: "contribution",
+        type: "earn",
       });
 
     if (transactionError) throw new Error("Failed to create point transaction");
 
-    await notificationsService.create({
-      user_id: userId,
-      type: "contribution_approved",
-      message: `申請された活動が承認されました`, // #TODO: 活動名も含めるなど
-      project_id: projectId,
-      url: `/profile`, // #TODO: 活動ページみたいの用意したら、そっちに飛びたい
-    });
+    // await notificationsService.create({
+    //   user_id: userId,
+    //   type: "contribution_approved",
+    //   message: `申請された活動が承認されました`, // #TODO: 活動名も含めるなど
+    //   project_id: projectId,
+    //   url: `/profile`, // #TODO: 活動ページみたいの用意したら、そっちに飛びたい
+    // });
 
     return { success: true };
   },

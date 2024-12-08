@@ -4,11 +4,13 @@ import {
   adminContributionTypesService,
   contributionTypesService,
 } from "@/services";
+import { useCache } from "./useCache";
 
 export const useContributionType = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const [data, setData] = useState<ContributionType[]>([]);
+  const { getCachedData } = useCache<ContributionType[]>("contribution-types");
 
   const fetchAll = async () => {
     setIsLoading(true);
@@ -32,7 +34,9 @@ export const useContributionType = () => {
       setError(null);
 
       try {
-        const data = await contributionTypesService.fetchAll();
+        const data = await getCachedData(async () =>
+          contributionTypesService.fetchAll()
+        );
         setData(data);
       } catch (err) {
         const errorMessage =

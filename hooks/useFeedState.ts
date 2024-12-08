@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { activitiesService } from "@/services/activities";
 import type { FeedItem } from "@/types";
+import { useCache } from "./useCache";
 
 export function useFeedState() {
   const [selectedActivityId, setSelectedActivityId] = useState<string | null>(
@@ -13,10 +14,13 @@ export function useFeedState() {
 
   const [feedItems, setFeedItems] = useState<FeedItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { getCachedData } = useCache<FeedItem[]>("feed-items");
 
   const loadFeedItems = async () => {
     try {
-      const data = await activitiesService.fetchFeedItems();
+      const data = await getCachedData(() =>
+        activitiesService.fetchFeedItems()
+      );
       setFeedItems(data);
     } catch (error) {
       console.error("Failed to load feed items:", error);
@@ -26,7 +30,6 @@ export function useFeedState() {
   };
 
   useEffect(() => {
-    if (feedItems.length) return;
     loadFeedItems();
   }, []);
 

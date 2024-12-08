@@ -1,7 +1,7 @@
 "use client";
 
 import { Notifications } from "@/features/notifications/Notifications";
-import { DEFAULT_PROJECT_NAME } from "@/config";
+import { DEFAULT_PROJECT } from "@/config";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/utils/cn";
@@ -37,9 +37,13 @@ export function AdminLayout({ children }: AdminLayoutProps) {
             className="flex items-center space-x-2"
             aria-label="ホームページへ"
           >
-            <div className="w-7 h-7 bg-primary rounded-full flex-shrink-0"></div>
+            <img
+              src={DEFAULT_PROJECT.thumbnail_url}
+              className="w-7 h-7 rounded-full flex-shrink-0"
+              alt="logo"
+            />
             <h1 className="text-lg font-bold text-foreground">
-              {DEFAULT_PROJECT_NAME}
+              {DEFAULT_PROJECT.name}
             </h1>
           </Link>
           <Notifications />

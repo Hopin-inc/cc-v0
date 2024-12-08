@@ -10,9 +10,9 @@ export function ProjectOverviewCard() {
         <ProjectStats />
         <Link
           href="/project"
-          className="flex items-center justify-end hover:underline px-4 pb-2"
+          className="flex items-center justify-end pb-2 group transition-transform duration-200 hover:-translate-y-0.5"
         >
-          <span className="text-sm font-medium text-muted-foreground mr-1">
+          <span className="text-sm font-medium text-muted-foreground group-hover:text-primary group-hover:text-bold mr-1">
             プロジェクト詳細を見る
           </span>
           <ArrowRight className="h-4 w-4 text-primary" />

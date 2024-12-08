@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import { LayoutWrapper } from "./LayoutWrapper";
 import { AdminLayout } from "./AdminLayout";
+import { ScrollToTop } from "@/components/functional/ScrollToTop";
 
 interface ConditionalLayoutProps {
   children: React.ReactNode;
@@ -13,8 +14,18 @@ export function ConditionalLayout({ children }: ConditionalLayoutProps) {
   const isAdminRoute = pathname?.startsWith("/admin");
 
   if (isAdminRoute) {
-    return <AdminLayout>{children}</AdminLayout>;
+    return (
+      <AdminLayout>
+        <ScrollToTop />
+        {children}
+      </AdminLayout>
+    );
   }
 
-  return <LayoutWrapper>{children}</LayoutWrapper>;
+  return (
+    <LayoutWrapper>
+      <ScrollToTop />
+      {children}
+    </LayoutWrapper>
+  );
 }

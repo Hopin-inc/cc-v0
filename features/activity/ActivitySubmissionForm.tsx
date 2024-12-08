@@ -9,9 +9,13 @@ import { PhotoUpload } from "./PhotoUpload";
 import { SubmissionComplete } from "./SubmissionComplete";
 import { useContributionType } from "@/hooks/useContributionType";
 import { useActivitySubmission } from "@/hooks/useActivitySubmission";
+import { useCurrentUserContext } from "@/contexts/UserContext";
+import { useRouter } from "next/navigation";
 
 export const ActivitySubmissionForm: React.FC = () => {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
+  const { isAuthenticated } = useCurrentUserContext();
   const { data: contributionTypes } = useContributionType();
   const {
     selectedType,
@@ -31,8 +35,10 @@ export const ActivitySubmissionForm: React.FC = () => {
   return (
     <>
       <Button
-        onClick={() => setIsOpen(true)}
-        className="fixed bottom-20 left-1/2 transform -translate-x-1/2 px-8 py-3 rounded-full shadow-lg flex items-center justify-center z-50 bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-200 text-base"
+        onClick={() =>
+          isAuthenticated ? setIsOpen(true) : router.push("/activity/apply")
+        }
+        className="fixed bottom-20 left-1/2 transform -translate-x-1/2 px-8 py-3 rounded-full shadow-lg flex items-center justify-center z-50 bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-105 transition-all duration-200 text-base"
       >
         <SendIcon className="w-5 h-5 mr-2" />
         <span className="font-medium">活動を申請する</span>

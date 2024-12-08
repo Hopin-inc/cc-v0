@@ -34,6 +34,8 @@ export type Comment = {
   };
 };
 
+export type UserPointTransaction = Tables<"user_point_transactions">;
+
 export type FeedItem = ActivityType & {
   user_contributions: Array<
     UserContribution & {
@@ -67,6 +69,7 @@ export type ParticipantsByYear = Record<
     id: number;
     label: string;
     role: string;
+    userId: string | null;
     image: string;
     frequency: number;
   }[]
@@ -79,7 +82,8 @@ export type RoleColors = {
 // Timeline types
 export type TimelineParticipant = {
   name: string;
-  avatar?: string;
+  userId: string;
+  thumbnailUrl?: string;
 };
 
 export type TimelineEvent = {

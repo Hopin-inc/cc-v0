@@ -21,6 +21,7 @@ import {
   createActivityFormFromActivity,
   initialActivityFormState,
 } from "./types";
+import { formatDate } from "@/utils/date";
 
 export const ActivitiesManagement = () => {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
@@ -162,7 +163,7 @@ export const ActivitiesManagement = () => {
                 <TableCell>{activity.content}</TableCell>
                 <TableCell>{activity.location}</TableCell>
                 <TableCell>
-                  {new Date(activity.created_at).toLocaleDateString()}
+                  {formatDate(activity.created_at)}
                 </TableCell>
                 <TableCell className="text-right space-x-2">
                   <Button

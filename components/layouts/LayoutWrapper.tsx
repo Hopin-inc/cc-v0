@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { BottomNav } from "@/components/layouts";
 import { Notifications } from "@/features/notifications/Notifications";
-import { DEFAULT_PROJECT_NAME } from "@/config";
+import { DEFAULT_PROJECT } from "@/config";
 import { useCurrentProjectContext } from "@/contexts/ProjectContext";
 
 interface LayoutWrapperProps {
@@ -22,13 +22,17 @@ export function LayoutWrapper({ children }: LayoutWrapperProps) {
         <header className="fixed top-0 left-0 right-0 bg-background border-b z-50 h-14">
           <div className="max-w-lg mx-auto px-4 py-2 flex justify-between items-center">
             <Link
-              href="/"
+              href={"/"}
               className="flex items-center space-x-2"
               aria-label="ホームページへ"
             >
-              <div className="w-7 h-7 bg-primary rounded-full flex-shrink-0"></div>
+              <img
+                src={DEFAULT_PROJECT.thumbnail_url}
+                className="w-7 h-7 rounded-full flex-shrink-0"
+                alt="logo"
+              />
               <h1 className="text-lg font-bold text-foreground">
-                {currentProject?.name || DEFAULT_PROJECT_NAME}
+                {currentProject?.name || DEFAULT_PROJECT.name}
               </h1>
             </Link>
             <Notifications />

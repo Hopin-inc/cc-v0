@@ -19,9 +19,13 @@ export const activitiesService = {
     const { data: activities, error } = await supabase
       .from("activities")
       .select(`${ACTIVITIES_SELECT_QUERY}`)
-      .eq("project_id", projectId)
-      .eq("user_contributions.user_id", userId)
-      .eq("type", "contribution")
+      .match({
+        project_id: projectId,
+        type: "contribution",
+        "user_contributions.user_id": userId,
+        "user_contributions.status": "approved",
+      })
+      .not("user_contributions", "is", null)
       .order("created_at", { ascending: false })
       .returns<FeedItem[]>();
 
@@ -37,8 +41,12 @@ export const activitiesService = {
     const { data: activities, error } = await supabase
       .from("activities")
       .select(`${ACTIVITIES_SELECT_QUERY}`)
-      .eq("type", "contribution")
-      .order("created_at", { ascending: false })
+      .match({
+        type: "contribution",
+        "user_contributions.status": "approved",
+      })
+      .not("user_contributions", "is", null)
+      .order("date", { ascending: false })
       .returns<FeedItem[]>();
 
     if (error) {

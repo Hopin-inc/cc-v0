@@ -16,41 +16,39 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Upload } from "lucide-react";
-import { ContributionTypes } from "@/data/contributeTypes";
+import { DEFAULT_PROJECT } from "@/config";
+import { useContributionType } from "@/hooks/useContributionType";
+import { useActivityApply } from "@/hooks/useActivityApply";
 
 export default function ActivityApply() {
-  const [email, setEmail] = useState("");
-  const [activityType, setActivityType] = useState("");
-  const [photo, setPhoto] = useState<File | null>(null);
-  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const {
+    email,
+    setEmail,
+    activityType,
+    setActivityType,
+    photoPreview,
+    setPhoto,
+    setPhotoPreview,
+    isSubmitting,
+    handleFile,
+    handleSubmit,
+  } = useActivityApply();
+
+  const { data: contributionTypes } = useContributionType();
   const [isDragging, setIsDragging] = useState(false);
-
-  const handleFile = (file: File) => {
-    setPhoto(file);
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setPhotoPreview(reader.result as string);
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Form submitted:", { email, activityType, photo });
-  };
 
   return (
     <div className="container mx-auto px-4 py-8">
       <Card>
         <CardHeader>
-          <CardTitle>〇〇プロジェクトでの活動申請</CardTitle>
+          <CardTitle>{DEFAULT_PROJECT.name}の活動申請</CardTitle>
           <CardDescription>
             活動を申請して、ポイントを獲得できます。
             申請後にメールに届くリンクをクリックして認証してください。
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
               <Label htmlFor="email">メールアドレス</Label>
               <Input
@@ -58,14 +56,14 @@ export default function ActivityApply() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="yamada@example.com"
+                placeholder="example@email.com"
                 required
               />
             </div>
             <ActivityTypeSelect
               value={activityType}
               onChange={setActivityType}
-              conributionTypes={ContributionTypes}
+              conributionTypes={contributionTypes}
               className="space-y-2"
             />
             <div className="space-y-2">
@@ -141,8 +139,14 @@ export default function ActivityApply() {
               </div>
             </div>
 
-            <Button type="submit" className="w-full">
-              申請する
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={
+                isSubmitting || !email || !activityType || !photoPreview
+              }
+            >
+              {isSubmitting ? "申請中..." : "活動を申請する"}
             </Button>
           </form>
 

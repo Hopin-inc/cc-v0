@@ -15,7 +15,8 @@ type UserContextType = {
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
-  const { refetch,currentUser, isLoading, error, isAuthenticated } = useCurrentUser();
+  const { refetch, currentUser, isLoading, error, isAuthenticated } =
+    useCurrentUser();
 
   return (
     <UserContext.Provider

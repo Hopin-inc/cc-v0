@@ -1,15 +1,9 @@
 "use client";
 
-import { withAdmin } from "@/components/hoc/withAdmin";
 import { ActivitiesManagement } from "@/features/admin/activities/ActivitiesManagement";
 
 function AdminActivitiesPage() {
-  return (
-    <div>
-      <h1>Activities Admin</h1>
-      <ActivitiesManagement />
-    </div>
-  );
+  return <ActivitiesManagement />;
 }
 
-export default withAdmin(AdminActivitiesPage);
+export default AdminActivitiesPage;

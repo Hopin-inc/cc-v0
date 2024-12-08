@@ -18,6 +18,7 @@ import {
 import { ContributionStatus, UserContribution } from "@/types";
 import { Activity } from "./types";
 import Image from "next/image";
+import { formatDate } from "@/utils/date";
 
 type ContributionsTableProps = {
   contributions: UserContribution[];
@@ -49,9 +50,7 @@ export const ContributionsTable = ({
         <TableBody>
           {contributions.map((contribution) => (
             <TableRow key={contribution.id}>
-              <TableCell>
-                {new Date(contribution.created_at).toLocaleDateString()}
-              </TableCell>
+              <TableCell>{formatDate(contribution.created_at)}</TableCell>
               <TableCell className="flex items-center space-x-2">
                 <span>{contribution.users?.name}</span>
               </TableCell>
@@ -92,7 +91,11 @@ export const ContributionsTable = ({
                   onValueChange={(value) =>
                     onStatusChange(contribution.id, value as ContributionStatus)
                   }
-                  disabled={isLoading || contribution.status === "approved"}
+                  disabled={
+                    isLoading ||
+                    contribution.status === "approved" ||
+                    contribution.activity_id === null
+                  }
                 >
                   <SelectTrigger className="w-[140px]">
                     <SelectValue />

@@ -12,6 +12,7 @@ import { useEffect } from "react";
 import { useNotifications } from "@/hooks/useNotifications";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import Link from "next/link";
+import { formatDate } from "@/utils/date";
 
 export function Notifications() {
   const { currentUser } = useCurrentUser();
@@ -64,7 +65,7 @@ export function Notifications() {
                     {notification.message}
                   </span>
                   <span className="text-xs text-gray-500">
-                    {new Date(notification.created_at).toLocaleDateString("ja-JP")}
+                    {formatDate(notification.created_at)}
                   </span>
                 </div>
               </Link>

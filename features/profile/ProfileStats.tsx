@@ -33,8 +33,6 @@ interface ProfileStatsProps {
 }
 
 export function ProfileStats({ userProfile, isLoading }: ProfileStatsProps) {
-  const { currentUser } = useCurrentUserContext();
-
   if (isLoading || !userProfile) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -50,15 +48,15 @@ export function ProfileStats({ userProfile, isLoading }: ProfileStatsProps) {
       {
         type: "badges",
         title: "バッジ",
-        items: currentUser?.badges || [],
+        items: userProfile?.badges || [],
         icon: Award,
       },
       {
         type: "points",
         title: "ポイント",
-        items: [{ label: "総獲得", value: currentUser?.total_points || 0 }],
+        items: [{ label: "総獲得", value: userProfile?.total_points || 0 }],
         icon: Star,
-        value: currentUser?.available_points || 0,
+        value: userProfile?.available_points || 0,
         unit: "pt",
       },
     ];
@@ -107,7 +105,7 @@ export function ProfileStats({ userProfile, isLoading }: ProfileStatsProps) {
                   </span>
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">
-                  総獲得: {stat.value.toLocaleString()}
+                  総獲得: {stat.items[0].value.toLocaleString()}
                   {stat.unit}
                 </p>
               </div>

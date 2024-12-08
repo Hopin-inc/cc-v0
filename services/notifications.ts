@@ -1,6 +1,6 @@
 import { TablesInsert } from "@/types/supabase";
 import { createSupabaseClient } from "./base";
-import { Notification, NotificationType } from "@/types";
+import { Notification } from "@/types";
 
 export const notificationsService = {
   async create(args: TablesInsert<"notifications">): Promise<Notification> {
@@ -19,8 +19,7 @@ export const notificationsService = {
       ])
       .select(
         `
-        *,
-        activity:activities(*)
+        *
       `
       )
       .single();
@@ -35,8 +34,7 @@ export const notificationsService = {
       .from("notifications")
       .select(
         `
-        *,
-        activity:activities(*)
+        *
       `
       )
       .eq("user_id", userId)
@@ -50,7 +48,7 @@ export const notificationsService = {
     const supabase = createSupabaseClient();
     const { error } = await supabase
       .from("notifications")
-      .update({ is_read: true, updated_at: new Date().toISOString() })
+      .update({ is_read: true })
       .eq("id", notificationId);
 
     if (error) throw error;

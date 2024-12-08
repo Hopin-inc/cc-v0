@@ -1,6 +1,7 @@
 import { ProjectType } from "@/types";
 import { useCallback, useEffect, useState } from "react";
 import { projectsService } from "@/services/projects";
+import { useCache } from "./useCache";
 
 type ReturnType = {
   currentProject: ProjectType | null;
@@ -15,32 +16,41 @@ export const useCurrentProject = (): ReturnType => {
   );
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  const { getCachedData, invalidateCache } =
+    useCache<ProjectType>("current-project");
 
-  const fetchProject = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const data = await projectsService.getCurrentProject();
-      setCurrentProject(data);
-    } catch (err) {
-      setError(
-        err instanceof Error ? err : new Error("Failed to fetch project")
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+  const fetchProject = useCallback(
+    async (forceFetch = false) => {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const data = await getCachedData(
+          () => projectsService.getCurrentProject(),
+          forceFetch
+        );
+        setCurrentProject(data);
+      } catch (err) {
+        setError(
+          err instanceof Error ? err : new Error("Failed to fetch project")
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [getCachedData]
+  );
 
   useEffect(() => {
-    if (!currentProject) {
-      fetchProject();
-    }
-  }, [currentProject]);
+    fetchProject();
+  }, []);
 
   return {
     currentProject,
     isLoading,
     error,
-    refetch: fetchProject,
+    refetch: () => {
+      invalidateCache();
+      return fetchProject(true);
+    },
   };
 };

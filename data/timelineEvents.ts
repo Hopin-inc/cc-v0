@@ -14,25 +14,22 @@ export const timelineEvents: TimelineEvent[] = [
     participants: [
       {
         name: "山田美咲",
-        avatar:
+        userId: "1",
+        thumbnailUrl:
           "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Fotor%20AI%20Image%20Creator%20Nov%2030%20(2).jpg-X3ovmV9GulL1hlyeo9MZSDkYcJkm07.jpeg",
       },
       {
         name: "佐藤恵子",
-        avatar:
+        userId: "1",
+        thumbnailUrl:
           "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Fotor%20AI%20Image%20Creator%20Nov%2030%20(1).jpg-crFDG8KnXQumBbkFlMTwwzyjtvd7jg.jpeg",
       },
       {
         name: "田中誠一",
-        avatar:
+        userId: "1",
+        thumbnailUrl:
           "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Fotor%20AI%20Image%20Creator%20Nov%2030%20(3).jpg-dsxXZr7JNvoHkkqVhnSB5EzhV5DaUg.jpeg",
       },
-      { name: "高橋", avatar: "/placeholder.svg?height=32&width=32" },
-      { name: "中村", avatar: "/placeholder.svg?height=32&width=32" },
-      { name: "伊藤", avatar: "/placeholder.svg?height=32&width=32" },
-      { name: "渡辺", avatar: "/placeholder.svg?height=32&width=32" },
-      { name: "小林", avatar: "/placeholder.svg?height=32&width=32" },
-      { name: "加藤", avatar: "/placeholder.svg?height=32&width=32" },
     ],
   },
   {
@@ -47,12 +44,14 @@ export const timelineEvents: TimelineEvent[] = [
     participants: [
       {
         name: "山田美咲",
-        avatar:
+        userId: "1",
+        thumbnailUrl:
           "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Fotor%20AI%20Image%20Creator%20Nov%2030%20(2).jpg-X3ovmV9GulL1hlyeo9MZSDkYcJkm07.jpeg",
       },
       {
         name: "佐藤恵子",
-        avatar:
+        userId: "1",
+        thumbnailUrl:
           "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Fotor%20AI%20Image%20Creator%20Nov%2030%20(1).jpg-crFDG8KnXQumBbkFlMTwwzyjtvd7jg.jpeg",
       },
     ],
@@ -69,17 +68,20 @@ export const timelineEvents: TimelineEvent[] = [
     participants: [
       {
         name: "山田美咲",
-        avatar:
+        userId: "1",
+        thumbnailUrl:
           "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Fotor%20AI%20Image%20Creator%20Nov%2030%20(2).jpg-X3ovmV9GulL1hlyeo9MZSDkYcJkm07.jpeg",
       },
       {
         name: "佐藤恵子",
-        avatar:
+        userId: "1",
+        thumbnailUrl:
           "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Fotor%20AI%20Image%20Creator%20Nov%2030%20(1).jpg-crFDG8KnXQumBbkFlMTwwzyjtvd7jg.jpeg",
       },
       {
         name: "田中誠一",
-        avatar:
+        userId: "1",
+        thumbnailUrl:
           "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Fotor%20AI%20Image%20Creator%20Nov%2030%20(3).jpg-dsxXZr7JNvoHkkqVhnSB5EzhV5DaUg.jpeg",
       },
     ],
