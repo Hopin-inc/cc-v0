@@ -61,14 +61,14 @@ export function ProjectTimeline() {
                         {event.images.map((image, imageIndex) => (
                           <div
                             key={imageIndex}
-                            className="overflow-hidden rounded-md shrink-0"
+                            className="overflow-hidden rounded-md shrink-0 w-[120px] h-[150px]"
                           >
                             <Image
                               src={image}
                               alt={`Image ${imageIndex + 1}`}
-                              className="object-cover"
-                              width={200}
-                              height={200}
+                              className="object-cover w-full h-full"
+                              width={120}
+                              height={150}
                             />
                           </div>
                         ))}
