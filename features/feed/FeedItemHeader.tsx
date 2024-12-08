@@ -7,7 +7,7 @@ type FeedItemHeaderProps = {
 
 const typeLabels = {
   activity: "活動",
-  recruitment: "募集",
+  recruitment: "ゆる募",
   announcement: "お知らせ",
 } as const;
 
