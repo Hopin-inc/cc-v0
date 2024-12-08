@@ -2,7 +2,7 @@ import { AvatarGroup } from "@/components/ui/avatar-group";
 import { formatDate } from "@/utils/date";
 import { cn } from "@/utils/cn";
 import { Comment } from "@/types";
-import { MessageCircle } from "lucide-react";
+import { MessageCircle, MapPin } from "lucide-react";
 import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -45,22 +45,43 @@ export function FeedItemFooter({
     <div className={cn("space-y-4", className)}>
       <div className="flex justify-between items-center text-sm text-muted-foreground">
         <div className="flex items-center gap-4">
-          <div>
-            {date && formatDate(date)}
-            {location && `・${location}`}
-          </div>
-          <button
-            onClick={() => setIsExpanded(!isExpanded)}
-            className={cn(
-              "flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground",
-              isExpanded && "text-foreground"
-            )}
-          >
-            <MessageCircle className="w-4 h-4" />
-            <span>{comments.length}</span>
-          </button>
+          <time>{date && formatDate(date)}</time>
+          {location && (
+            <div className="flex items-center gap-1">
+              <MapPin className="w-4 h-4" />
+              <span>{location}</span>
+            </div>
+          )}
         </div>
-        <AvatarGroup users={users} />
+        <div className="flex items-center gap-2">
+          {users.length > 0 && (
+            <AvatarGroup
+              users={users}
+              limit={3}
+              className="hover:scale-105 transition-transform"
+            />
+          )}
+          <Button
+            variant="ghost"
+            size="icon"
+            className={cn(
+              "rounded-full transition-all duration-200",
+              "hover:bg-gray-100 hover:scale-110",
+              "active:scale-95",
+              isExpanded && "text-primary bg-primary/10"
+            )}
+            onClick={() => setIsExpanded(!isExpanded)}
+          >
+            <div className="relative">
+              <MessageCircle className="w-5 h-5" />
+              {comments.length > 0 && (
+                <span className="absolute -top-1 -right-1 bg-primary text-[10px] text-white rounded-full min-w-[16px] h-4 flex items-center justify-center">
+                  {comments.length}
+                </span>
+              )}
+            </div>
+          </Button>
+        </div>
       </div>
 
       {isExpanded && (
