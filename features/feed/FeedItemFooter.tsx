@@ -9,6 +9,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { useState } from "react";
+import { Fragment } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,6 +21,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useCurrentUserContext } from "@/contexts/UserContext";
+import { formatContent } from "@/utils/formatContent";
 
 type FeedItemFooterProps = {
   isLoading?: boolean;
@@ -201,7 +203,9 @@ export function FeedItemFooter({
                       </div>
                     </form>
                   ) : (
-                    <p className="text-sm text-gray-700">{comment.content}</p>
+                    <p className="text-sm text-gray-700 whitespace-pre-wrap">
+                      {formatContent(comment.content)}
+                    </p>
                   )}
                 </div>
               </div>

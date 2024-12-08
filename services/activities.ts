@@ -8,7 +8,15 @@ const ACTIVITIES_SELECT_QUERY = `
     users (*),
     user_photos (*)
   ),
-  created_by:users!created_by_user_id(*)
+  created_by:users!created_by_user_id(*),
+  comments:user_activity_comment (
+    *,
+    users:user_id (
+      id,
+      name,
+      thumbnail_url
+    )
+  )
 ` as const;
 
 export const activitiesService = {
