@@ -33,14 +33,14 @@ export const commentsService = {
     const supabase = createSupabaseClient();
 
     // 1. まずactivityの情報を取得して、typeを確認
-    const { data: activity } = await supabase
+    const { data: activity, error: activityError } = await supabase
       .from("activities")
       .select("type, project_id")
       .eq("id", args.activity_id)
       .single();
 
     // 2. コメントを追加
-    const { data: comment, error } = await supabase
+    const { data: comment, error: commentError } = await supabase
       .from("user_activity_comments")
       .insert([args])
       .select(
@@ -53,10 +53,10 @@ export const commentsService = {
         )
       `
       )
-      .returns<Comment>()
+      .order("created_at", { ascending: true })
       .single();
 
-    if (error) {
+    if (commentError || !comment) {
       throw new Error("Failed to add comment");
     }
 

@@ -1,20 +1,33 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { commentsService } from "@/services/comments";
 import { useCurrentUserContext } from "@/contexts/UserContext";
 import { toast } from "sonner";
 import { Comment } from "@/types";
 import { useCurrentProjectContext } from "@/contexts/ProjectContext";
 
+const sortCommentsByDate = (comments: Comment[]) =>
+  comments.sort(
+    (a, b) =>
+      new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+  );
+
 export function useActivityComments(
   activityId: string,
   initialComments?: Comment[]
 ) {
-  const [comments, setComments] = useState<Comment[]>(initialComments || []);
+  const [comments, setComments] = useState<Comment[]>(
+    initialComments ? sortCommentsByDate(initialComments) : []
+  );
   const [isLoading, setIsLoading] = useState(!initialComments);
   const { currentUser } = useCurrentUserContext();
   const { currentProject } = useCurrentProjectContext();
+
+  const sortedComments = useMemo(
+    () => sortCommentsByDate(comments),
+    [comments]
+  );
 
   const loadComments = async () => {
     if (initialComments) return;
@@ -85,7 +98,7 @@ export function useActivityComments(
   }, [activityId]);
 
   return {
-    comments,
+    comments: sortedComments,
     addComment,
     updateComment,
     deleteComment,
