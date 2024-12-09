@@ -37,9 +37,26 @@ interface ProfileStatsProps {
 export function ProfileStats({ userProfile, isLoading }: ProfileStatsProps) {
   if (isLoading || !userProfile) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid gap-4 grid-cols-2">
         {[...Array(2)].map((_, i) => (
-          <div key={i} className="h-48 bg-muted rounded-lg animate-pulse" />
+          <Card key={i} className="p-3">
+            <div className="flex items-center space-x-2 mb-2">
+              <div className="h-7 w-7 bg-muted rounded-full animate-pulse" />
+              <div className="h-4 w-16 bg-muted rounded animate-pulse" />
+            </div>
+            <div className="pl-9">
+              <div className="space-y-2">
+                <div className="flex flex-wrap gap-1">
+                  {[...Array(3)].map((_, j) => (
+                    <div
+                      key={j}
+                      className="h-4 w-12 bg-muted rounded animate-pulse"
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </Card>
         ))}
       </div>
     );
@@ -80,19 +97,22 @@ export function ProfileStats({ userProfile, isLoading }: ProfileStatsProps) {
           </div>
           <div className="pl-9">
             {stat.type === "badges" && (
-              <div className="flex flex-wrap gap-1">
+              <div className="flex flex-wrap gap-2">
                 {stat.items.length > 0 ? (
                   stat.items.map((item, itemIndex) => (
                     <Badge
                       key={itemIndex}
-                      variant="secondary"
+                      variant="weak-secondary"
                       className="text-[10px] py-0.5"
                     >
-                      {item.name}
+                      # {item.name}
                     </Badge>
                   ))
                 ) : (
-                  <Badge variant="secondary" className="text-[10px] py-0.5">
+                  <Badge
+                    variant="weak-secondary"
+                    className="text-[10px] py-0.5"
+                  >
                     未取得
                   </Badge>
                 )}

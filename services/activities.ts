@@ -53,8 +53,11 @@ export const activitiesService = {
         supabase
           .from("activities")
           .select(`${ACTIVITIES_SELECT_QUERY}`)
-          .eq("project_id", projectId)
-          .eq("comments.user_id", userId)
+          .match({
+            project_id: projectId,
+            "comments.user_id": userId,
+            type: "recruitment",
+          })
           .not("comments", "is", null)
           .order("created_at", { ascending: false })
           .returns<FeedItem[]>(),
