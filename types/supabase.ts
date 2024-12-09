@@ -60,6 +60,46 @@ export type Database = {
           },
         ]
       }
+      activity_badges: {
+        Row: {
+          activity_id: string
+          badge_id: string
+          created_at: string
+        }
+        Insert: {
+          activity_id: string
+          badge_id: string
+          created_at?: string
+        }
+        Update: {
+          activity_id?: string
+          badge_id?: string
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "activity_badges_activity_id_fkey"
+            columns: ["activity_id"]
+            isOneToOne: false
+            referencedRelation: "activities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_badges_badge_id_fkey"
+            columns: ["badge_id"]
+            isOneToOne: false
+            referencedRelation: "badges"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_badges_project_id_fkey"
+            columns: ["activity_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       badges: {
         Row: {
           created_at: string

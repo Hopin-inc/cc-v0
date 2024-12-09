@@ -52,4 +52,37 @@ export const badgesService = {
       .eq('badge_id', badgeId)
     if (error) throw error
   },
+
+  // アクティビティに関連するバッジを取得
+  getActivityBadges: async (activityId: string) => {
+    const supabase = createClientComponentClient<Database>()
+    const { data, error } = await supabase
+      .from('activity_badges')
+      .select('*, badges(*)')
+      .eq('activity_id', activityId)
+    if (error) throw error
+    return data
+  },
+
+  // アクティビティにバッジを紐付け
+  assignBadgeToActivity: async (activityId: string, badgeId: string) => {
+    const supabase = createClientComponentClient<Database>()
+    const { data, error } = await supabase
+      .from('activity_badges')
+      .insert({ activity_id: activityId, badge_id: badgeId })
+      .select()
+    if (error) throw error
+    return data[0]
+  },
+
+  // アクティビティからバッジを削除
+  removeBadgeFromActivity: async (activityId: string, badgeId: string) => {
+    const supabase = createClientComponentClient<Database>()
+    const { error } = await supabase
+      .from('activity_badges')
+      .delete()
+      .eq('activity_id', activityId)
+      .eq('badge_id', badgeId)
+    if (error) throw error
+  },
 }
