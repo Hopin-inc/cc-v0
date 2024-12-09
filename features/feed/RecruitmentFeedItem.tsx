@@ -7,7 +7,7 @@ import { FeedItemFooter } from "./FeedItemFooter";
 import { useActivityComments } from "@/hooks/useActivityComments";
 import { useCurrentUserContext } from "@/contexts/UserContext";
 import { useState, useMemo } from "react";
-import { UserContribution } from "@/types"; // Assuming UserContribution type is defined here
+import { UserContribution } from "@/types";
 
 type RecruitmentFeedItemProps = {
   item: FeedItem;
@@ -22,6 +22,7 @@ export function RecruitmentFeedItem({ item }: RecruitmentFeedItemProps) {
     created_by,
     comments,
     user_contributions,
+    activity_badges,
   } = item;
 
   const { currentUser } = useCurrentUserContext();
@@ -88,7 +89,15 @@ export function RecruitmentFeedItem({ item }: RecruitmentFeedItemProps) {
 
   return (
     <div>
-      <FeedItemHeader type="recruitment" />
+      <FeedItemHeader
+        type="recruitment"
+        badges={activity_badges.map((ab) => ({
+          id: ab.badge_id,
+          name: ab.badges.name,
+          value: ab.badges.value,
+          created_at: ab.badges.created_at,
+        }))}
+      />
       <div className="space-y-2">
         <FeedItemContent title={title} content={content} type="recruitment" />
         <FeedItemFooter

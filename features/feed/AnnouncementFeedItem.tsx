@@ -10,8 +10,13 @@ type AnnouncementFeedItemProps = {
 
 export function AnnouncementFeedItem({ item }: AnnouncementFeedItemProps) {
   const { title, content, date, location, created_by, comments } = item;
-  const { comments: activityComments, addComment, isLoading, updateComment, deleteComment } =
-    useActivityComments(item.id, comments);
+  const {
+    comments: activityComments,
+    addComment,
+    isLoading,
+    updateComment,
+    deleteComment,
+  } = useActivityComments(item.id, comments);
 
   return (
     <div>

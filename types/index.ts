@@ -33,6 +33,11 @@ export type Comment = Tables<"user_activity_comments"> & {
 
 export type UserPointTransaction = Tables<"user_point_transactions">;
 
+export type ActivityBadge = {
+  badge_id: string;
+  badges: Badge;
+};
+
 export type FeedItem = ActivityType & {
   user_contributions: Array<
     UserContribution & {
@@ -42,6 +47,7 @@ export type FeedItem = ActivityType & {
   >;
   created_by?: User;
   comments: Comment[];
+  activity_badges: ActivityBadge[];
 };
 
 export type NotificationType =

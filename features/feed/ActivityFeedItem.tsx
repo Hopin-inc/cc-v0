@@ -5,10 +5,6 @@ import { FeedItemContent } from "./FeedItemContent";
 import { FeedItemFooter } from "./FeedItemFooter";
 import Image from "next/image";
 import { useActivityComments } from "@/hooks/useActivityComments";
-import { Badge } from "@/components/ui/badge";
-import { useEffect, useState } from "react";
-import { badgesService } from "@/services/badges";
-import { Badge as BadgeType } from "@/types";
 
 type ActivityFeedItemProps = {
   item: FeedItem;
@@ -21,7 +17,15 @@ export function ActivityFeedItem({
   onPhotoClick,
   layout = "default",
 }: ActivityFeedItemProps) {
-  const { user_contributions, title, content, date, location, comments } = item;
+  const {
+    user_contributions,
+    title,
+    content,
+    date,
+    location,
+    comments,
+    activity_badges,
+  } = item;
   const {
     comments: activityComments,
     addComment,
@@ -29,29 +33,6 @@ export function ActivityFeedItem({
     updateComment,
     deleteComment,
   } = useActivityComments(item.id, comments);
-  const [badges, setBadges] = useState<BadgeType[]>([]);
-
-  useEffect(() => {
-    const fetchBadges = async () => {
-      try {
-        const activityBadges = await badgesService.getActivityBadges(item.id);
-        setBadges(
-          activityBadges.map((ab) => {
-            return {
-              id: ab.badge_id,
-              name: ab.badges?.name ?? "",
-              value: ab.badges?.value ?? "",
-              created_at: ab.badges?.created_at ?? "",
-            };
-          })
-        );
-      } catch (error) {
-        console.error("Failed to load activity badges:", error);
-      }
-    };
-    fetchBadges();
-  }, [item.id]);
-
   const photos = user_contributions.flatMap(
     (contribution) => contribution.user_photos
   );
@@ -65,18 +46,17 @@ export function ActivityFeedItem({
 
   return (
     <div>
-      <FeedItemHeader type="activity" />
+      <FeedItemHeader
+        type="activity"
+        badges={activity_badges.map((ab) => ({
+          id: ab.badge_id,
+          name: ab.badges.name,
+          value: ab.badges.value,
+          created_at: ab.badges.created_at,
+        }))}
+      />
       <div className="w-full mb-4">
         <div className="space-y-2">
-          {badges.length > 0 && (
-            <div className="flex flex-wrap gap-2 mb-2">
-              {badges.map((badge) => (
-                <Badge key={badge.id} variant="secondary">
-                  {badge.name}
-                </Badge>
-              ))}
-            </div>
-          )}
           {photos && photos.length > 0 && (
             <div
               className={`grid ${

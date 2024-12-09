@@ -16,6 +16,15 @@ const ACTIVITIES_SELECT_QUERY = `
       name,
       thumbnail_url
     )
+  ),
+  activity_badges (
+    badge_id,
+    badges!badge_id (
+      id,
+      name,
+      value,
+      created_at
+    )
   )
 ` as const;
 
