@@ -27,6 +27,10 @@ const sidebarItems = [
     label: "活動種別管理",
     href: "/admin/contribution-types",
   },
+  {
+    label: "バッジ管理",
+    href: "/admin/badges",
+  },
 ] as const;
 
 export function AdminLayout({ children }: AdminLayoutProps) {

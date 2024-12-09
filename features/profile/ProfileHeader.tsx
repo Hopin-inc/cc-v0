@@ -2,10 +2,25 @@ import { useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { UserProfile } from "@/types";
-import { Pencil } from "lucide-react";
+import { MoreHorizontal, Pencil, LogOut, Lock } from "lucide-react";
 import { EditProfileModal } from "./EditProfileModal";
 import { useCurrentUserContext } from "@/contexts/UserContext";
+import { useAuth } from "@/hooks/useAuth";
+import { useRouter } from "next/navigation";
 
 type ProfileHeaderProps = {
   userProfile: UserProfile | null;
@@ -18,7 +33,18 @@ export const ProfileHeader = ({
 }: ProfileHeaderProps) => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const { currentUser } = useCurrentUserContext();
+  const { signOut } = useAuth();
+  const router = useRouter();
   const isOwnProfile = currentUser?.id === userProfile?.id;
+
+  const handleLogout = async () => {
+    await signOut();
+    router.push("/login");
+  };
+
+  const handlePasswordReset = () => {
+    router.push("/auth/reset-password");
+  };
 
   if (isLoading) {
     return (
@@ -50,15 +76,42 @@ export const ProfileHeader = ({
         <div className="flex items-start justify-between">
           <h1 className="text-2xl font-bold">{userProfile.name}</h1>
           {isOwnProfile && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setIsEditModalOpen(true)}
-              className="text-muted-foreground hover:text-foreground"
-            >
-              <Pencil className="h-4 w-4" />
-              <span className="sr-only">プロフィールを編集</span>
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-muted-foreground hover:text-foreground"
+                >
+                  <MoreHorizontal className="h-4 w-4" />
+                  <span className="sr-only">メニューを開く</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="min-w-[160px]">
+                <DropdownMenuItem 
+                  onClick={() => setIsEditModalOpen(true)}
+                  className="text-muted-foreground hover:text-foreground cursor-pointer text-sm"
+                >
+                  <Pencil className="h-3.5 w-3.5 mr-2" />
+                  プロフィールを編集
+                </DropdownMenuItem>
+                <DropdownMenuItem 
+                  onClick={handlePasswordReset}
+                  className="text-muted-foreground hover:text-foreground cursor-pointer text-sm"
+                >
+                  <Lock className="h-3.5 w-3.5 mr-2" />
+                  パスワード再設定
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem 
+                  onClick={handleLogout}
+                  className="text-muted-foreground hover:text-foreground cursor-pointer text-sm"
+                >
+                  <LogOut className="h-3.5 w-3.5 mr-2" />
+                  ログアウト
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           )}
         </div>
         {userProfile.bio && (
