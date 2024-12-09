@@ -8,10 +8,6 @@ export function useFeedState() {
     null
   );
 
-  const [participationStatus, setParticipationStatus] = useState<{
-    [key: string]: boolean;
-  }>({});
-
   const [feedItems, setFeedItems] = useState<FeedItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { getCachedData } = useCache<FeedItem[]>("feed-items");
@@ -40,8 +36,6 @@ export function useFeedState() {
   return {
     selectedActivityId,
     setSelectedActivityId,
-    participationStatus,
-    setParticipationStatus,
     onPhotoClick,
     feedItems,
     setFeedItems,

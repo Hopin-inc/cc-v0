@@ -10,8 +10,6 @@ export function IntegratedFeed() {
     onPhotoClick,
     selectedActivityId,
     setSelectedActivityId,
-    participationStatus,
-    setParticipationStatus,
     feedItems,
     isLoading,
   } = useFeedState();
@@ -33,9 +31,7 @@ export function IntegratedFeed() {
             <FeedItemRenderer
               key={item.id}
               item={item}
-              participationStatus={participationStatus[item.id] || false}
               onPhotoClick={onPhotoClick}
-              setParticipationStatus={setParticipationStatus}
             />
           ))}
           {selectedActivity && (

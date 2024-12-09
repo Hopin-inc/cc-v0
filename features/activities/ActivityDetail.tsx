@@ -16,12 +16,7 @@ interface ActivityDetailProps {
 export function ActivityDetail({ activityId }: ActivityDetailProps) {
   const router = useRouter();
   const { data: activity, isLoading } = useActivityDetail(activityId);
-  const {
-    selectedActivityId,
-    setSelectedActivityId,
-    participationStatus,
-    setParticipationStatus,
-  } = useFeedState();
+  const { selectedActivityId, setSelectedActivityId } = useFeedState();
 
   const handleBack = () => {
     router.back();
@@ -79,9 +74,7 @@ export function ActivityDetail({ activityId }: ActivityDetailProps) {
       </Button>
       <FeedItemRenderer
         item={activity}
-        participationStatus={participationStatus[activity.id] || false}
         onPhotoClick={(activityId) => setSelectedActivityId(activityId)}
-        setParticipationStatus={setParticipationStatus}
       />
       {selectedActivityId && (
         <PhotoAlbumModal

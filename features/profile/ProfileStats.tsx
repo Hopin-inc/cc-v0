@@ -4,7 +4,6 @@ import { Card } from "@/components/ui/card";
 import { Award, LucideIcon, Star } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Badge as BadgeType, UserProfile } from "@/types";
-import { useCurrentUserContext } from "@/contexts/UserContext";
 import CountUp from "react-countup";
 
 interface StatItem {

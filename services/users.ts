@@ -39,7 +39,7 @@ export const usersService = {
     const supabase = createSupabaseClient();
     const { data, error } = await supabase
       .from("users")
-      .select("*")
+      .select("*, badges (*)")
       .eq("id", userId)
       .single();
 

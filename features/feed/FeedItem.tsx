@@ -3,24 +3,14 @@ import { ActivityFeedItem } from "@/features/feed";
 import { AnnouncementFeedItem } from "@/features/feed";
 import { RecruitmentFeedItem } from "@/features/feed";
 import { FeedItem as FeedItemType } from "@/types";
-import { Button } from "@/components/ui";
-import { UserPlus, UserMinus } from "lucide-react";
 
 type FeedItemProps = {
   item: FeedItemType;
   onPhotoClick: (activityId: string) => void;
-  participationStatus?: boolean;
-  onParticipationRequest?: () => void;
   children?: React.ReactNode;
 };
 
-export function FeedItem({
-  item,
-  onPhotoClick,
-  participationStatus,
-  onParticipationRequest,
-  children,
-}: FeedItemProps) {
+export function FeedItem({ item, onPhotoClick, children }: FeedItemProps) {
   return (
     <Card>
       <CardContent className="p-6 space-y-4">

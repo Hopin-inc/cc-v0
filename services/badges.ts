@@ -85,4 +85,37 @@ export const badgesService = {
       .eq('badge_id', badgeId)
     if (error) throw error
   },
+
+  // ユーザーが持っていないバッジのみを付与
+  assignBadgesIfNotExists: async (userId: string, badgeIds: string[]) => {
+    const supabase = createClientComponentClient<Database>()
+    
+    // 既存のバッジを取得
+    const { data: existingBadges } = await supabase
+      .from('user_badges')
+      .select('badge_id')
+      .eq('user_id', userId)
+      .in('badge_id', badgeIds)
+
+    // 持っていないバッジのみをフィルタリング
+    const newBadgeIds = badgeIds.filter(
+      id => !existingBadges?.some(eb => eb.badge_id === id)
+    )
+
+    if (newBadgeIds.length === 0) return []
+
+    // 新しいバッジを付与
+    const { data, error } = await supabase
+      .from('user_badges')
+      .insert(
+        newBadgeIds.map(badgeId => ({
+          user_id: userId,
+          badge_id: badgeId
+        }))
+      )
+      .select()
+
+    if (error) throw error
+    return data
+  },
 }

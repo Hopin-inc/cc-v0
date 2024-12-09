@@ -2,6 +2,9 @@ import { createSupabaseClient } from "./base";
 import { Comment } from "@/types";
 import { userContributionsService } from "./userContributions";
 import { TablesInsert } from "@/types/supabase";
+import { badgesService } from "./badges";
+
+const DEFAULT_CONTRIBUTION_TYPE_ID = "57ee3bc7-76af-4b4d-8606-c648fc8ff860"; // #NOTE: フリー
 
 export const commentsService = {
   fetchActivityComments: async (activityId: string) => {
@@ -35,9 +38,27 @@ export const commentsService = {
     // 1. まずactivityの情報を取得して、typeを確認
     const { data: activity, error: activityError } = await supabase
       .from("activities")
-      .select("type, project_id")
+      .select(
+        `
+        type,
+        project_id,
+        activity_badges (
+          badge_id,
+          badges (
+            id,
+            name,
+            value,
+            created_at
+          )
+        )
+      `
+      )
       .eq("id", args.activity_id)
       .single();
+
+    if (activityError || !activity) {
+      throw new Error("Failed to fetch activity");
+    }
 
     // 2. コメントを追加
     const { data: comment, error: commentError } = await supabase
@@ -53,7 +74,6 @@ export const commentsService = {
         )
       `
       )
-      .order("created_at", { ascending: true })
       .single();
 
     if (commentError || !comment) {
@@ -73,13 +93,24 @@ export const commentsService = {
         await userContributionsService.create({
           activity_id: args.activity_id,
           user_id: args.user_id,
-          status: "approved",
-          type_id: "57ee3bc7-76af-4b4d-8606-c648fc8ff860", // #NOTE: ひとまずフリーに
           project_id: args.project_id,
+          date: new Date().toISOString(),
+          status: "approved",
+          type_id: DEFAULT_CONTRIBUTION_TYPE_ID,
         });
+        // 4. バッジを付与（approvedの場合のみ）
+        if (activity.activity_badges?.length > 0) {
+          try {
+            await badgesService.assignBadgesIfNotExists(
+              args.user_id,
+              activity.activity_badges.map((ab) => ab.badge_id)
+            );
+          } catch (error) {
+            console.error("Failed to assign badges:", error);
+          }
+        }
       }
     }
-
     return comment;
   },
 
