@@ -13,8 +13,9 @@ export const useAdminActivityMutation = () => {
     setError(null);
 
     try {
-      await adminActivitiesService.create(input);
+      const result = await adminActivitiesService.create(input);
       toast.success("活動を作成しました");
+      return result;
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "活動の作成に失敗しました";
@@ -31,8 +32,9 @@ export const useAdminActivityMutation = () => {
     setError(null);
 
     try {
-      await adminActivitiesService.update(id, input);
+      const result = await adminActivitiesService.update(id, input);
       toast.success("活動を更新しました");
+      return { id };
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "活動の更新に失敗しました";

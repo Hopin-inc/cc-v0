@@ -24,28 +24,34 @@ export const adminActivitiesService = {
     return data as Activity[];
   },
 
-  create: async (input: TablesInsert<"activities">): Promise<void> => {
+  create: async (input: TablesInsert<"activities">): Promise<{ id: string }> => {
     const supabase = createSupabaseClient();
-    const { error } = await supabase.from("activities").insert(input);
+    const { data, error } = await supabase.from("activities").insert(input).select().single();
 
-    if (error) {
+    if (error || !data) {
       throw new Error("Failed to create activity");
     }
+
+    return { id: data.id };
   },
 
   update: async (
     id: string,
     input: Partial<TablesUpdate<"activities">>
-  ): Promise<void> => {
+  ): Promise<{ id: string }> => {
     const supabase = createSupabaseClient();
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from("activities")
       .update(input)
-      .eq("id", id);
+      .eq("id", id)
+      .select()
+      .single();
 
-    if (error) {
+    if (error || !data) {
       throw new Error("Failed to update activity");
     }
+
+    return { id: data.id };
   },
 
   delete: async (id: string): Promise<void> => {

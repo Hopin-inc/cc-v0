@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { useAdminActivity } from "@/hooks/admin/useAdminActivity";
 import { useAdminActivityMutation } from "@/hooks/admin/useAdminActivityMutation";
-import { ActivityType, FeedItem } from "@/types";
+import { useAdminActivityBadgeMutation } from "@/hooks/admin/useAdminActivityBadgeMutation";
+import { ActivityType, FeedItem, Badge as BadgeType } from "@/types";
 import { toast } from "sonner";
 import { ActivityDialog } from "../activities/ActivityDialog";
 import {
@@ -28,21 +29,29 @@ export const RecruitmentsManagement = () => {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [form, setForm] = useState<ActivityFormState>(initialActivityFormState);
+  const hadleSetForm = (form: Partial<ActivityFormState>) => {
+    setForm((prev) => ({
+      ...prev,
+      ...form,
+    }));
+  };
   const [editingActivity, setEditingActivity] = useState<ActivityType | null>(
     null
   );
   const [recruitments, setRecruitments] = useState<FeedItem[]>([]);
+  const [selectedBadges, setSelectedBadges] = useState<BadgeType[]>([]);
   const { currentProject } = useCurrentProject();
   const { currentUser } = useCurrentUserContext();
 
-  const { fetchAll, isLoading: isFetchLoading } = useAdminActivity();
+  const { fetchAll } = useAdminActivity();
   const {
     create,
     update,
     remove,
     isLoading: isMutationLoading,
-    error,
   } = useAdminActivityMutation();
+  const { assignBadges, isLoading: isBadgeMutationLoading } =
+    useAdminActivityBadgeMutation();
 
   useEffect(() => {
     if (currentProject?.id) {
@@ -69,7 +78,7 @@ export const RecruitmentsManagement = () => {
     }
 
     try {
-      await create({
+      const result = await create({
         title: form.title,
         content: form.content ?? "",
         date: form.date ?? "",
@@ -78,10 +87,12 @@ export const RecruitmentsManagement = () => {
         type: "recruitment",
         created_by_user_id: currentUser.id,
       });
+      await assignBadges(result.id, selectedBadges);
       setIsCreateDialogOpen(false);
       resetForm();
       loadData();
       toast.success("ゆる募を作成しました");
+      return result;
     } catch (error) {
       console.error("Failed to create recruitment:", error);
       toast.error("ゆる募を作成できませんでした");
@@ -95,18 +106,19 @@ export const RecruitmentsManagement = () => {
     }
 
     try {
-      await update(editingActivity.id, {
+      const result = await update(editingActivity.id, {
         title: form.title,
         content: form.content ?? undefined,
         date: form.date ?? undefined,
         location: form.location ?? undefined,
-        type: "recruitment",
       });
+      await assignBadges(editingActivity.id, selectedBadges);
       setIsEditDialogOpen(false);
-      setEditingActivity(null);
       resetForm();
+      setEditingActivity(null);
       loadData();
       toast.success("ゆる募を更新しました");
+      return result;
     } catch (error) {
       console.error("Failed to update recruitment:", error);
       toast.error("ゆる募を更新できませんでした");
@@ -128,11 +140,13 @@ export const RecruitmentsManagement = () => {
 
   const resetForm = () => {
     setForm(initialActivityFormState);
+    setSelectedBadges([]);
   };
 
   const startEdit = (activity: ActivityType) => {
     setEditingActivity(activity);
     setForm(createActivityFormFromActivity(activity));
+    setSelectedBadges(activity.badges || []);
     setIsEditDialogOpen(true);
   };
 
@@ -194,10 +208,12 @@ export const RecruitmentsManagement = () => {
         isOpen={isCreateDialogOpen}
         onOpenChange={setIsCreateDialogOpen}
         form={form}
-        onFormChange={(changes) => setForm((prev) => ({ ...prev, ...changes }))}
+        onFormChange={hadleSetForm}
         onSubmit={handleCreate}
-        isLoading={isMutationLoading}
+        isLoading={isMutationLoading || isBadgeMutationLoading}
         type="recruitment"
+        selectedBadges={selectedBadges}
+        onSelectedBadgesChange={setSelectedBadges}
       />
 
       {editingActivity && (
@@ -206,13 +222,13 @@ export const RecruitmentsManagement = () => {
           isOpen={isEditDialogOpen}
           onOpenChange={setIsEditDialogOpen}
           form={form}
-          onFormChange={(changes) =>
-            setForm((prev) => ({ ...prev, ...changes }))
-          }
+          onFormChange={hadleSetForm}
           onSubmit={handleEdit}
-          isLoading={isMutationLoading}
+          isLoading={isMutationLoading || isBadgeMutationLoading}
           activity={editingActivity}
           type="recruitment"
+          selectedBadges={selectedBadges}
+          onSelectedBadgesChange={setSelectedBadges}
         />
       )}
     </div>

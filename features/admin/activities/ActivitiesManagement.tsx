@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { useAdminActivity } from "@/hooks/admin/useAdminActivity";
 import { useAdminActivityMutation } from "@/hooks/admin/useAdminActivityMutation";
-import { ActivityType, FeedItem } from "@/types";
+import { useAdminActivityBadgeMutation } from "@/hooks/admin/useAdminActivityBadgeMutation";
+import { ActivityType, FeedItem, Badge as BadgeType } from "@/types";
 import { toast } from "sonner";
 import { ActivityDialog } from "./ActivityDialog";
 import {
@@ -28,10 +29,17 @@ export const ActivitiesManagement = () => {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [form, setForm] = useState<ActivityFormState>(initialActivityFormState);
+  const handleSetForm = (form: Partial<ActivityFormState>) => {
+    setForm((prev) => ({
+      ...prev,
+      ...form,
+    }));
+  };
   const [editingActivity, setEditingActivity] = useState<ActivityType | null>(
     null
   );
   const [activities, setActivities] = useState<FeedItem[]>([]);
+  const [selectedBadges, setSelectedBadges] = useState<BadgeType[]>([]);
   const { currentProject } = useCurrentProject();
   const { currentUser } = useCurrentUserContext();
 
@@ -43,6 +51,8 @@ export const ActivitiesManagement = () => {
     isLoading: isMutationLoading,
     error,
   } = useAdminActivityMutation();
+  const { assignBadges, isLoading: isBadgeMutationLoading } =
+    useAdminActivityBadgeMutation();
 
   useEffect(() => {
     if (currentProject?.id) {
@@ -53,8 +63,7 @@ export const ActivitiesManagement = () => {
   const loadData = async () => {
     if (!currentProject?.id) return;
     try {
-      const data = await fetchAll(currentProject.id);
-  
+      const data = await fetchAll(currentProject.id, "contribution");
       // @ts-ignore
       setActivities(data);
     } catch (error) {
@@ -70,14 +79,16 @@ export const ActivitiesManagement = () => {
     }
 
     try {
-      await create({
+      const result = await create({
         title: form.title,
         content: form.content ?? "",
         date: form.date ?? "",
         location: form.location ?? "",
         project_id: currentProject.id,
         created_by_user_id: currentUser.id,
+        type: "contribution",
       });
+      await assignBadges(result.id, selectedBadges);
       setIsCreateDialogOpen(false);
       resetForm();
       loadData();
@@ -101,6 +112,7 @@ export const ActivitiesManagement = () => {
         date: form.date ?? undefined,
         location: form.location ?? undefined,
       });
+      await assignBadges(editingActivity.id, selectedBadges);
       setIsEditDialogOpen(false);
       setEditingActivity(null);
       resetForm();
@@ -127,11 +139,13 @@ export const ActivitiesManagement = () => {
 
   const resetForm = () => {
     setForm(initialActivityFormState);
+    setSelectedBadges([]);
   };
 
   const startEdit = (activity: ActivityType) => {
     setEditingActivity(activity);
     setForm(createActivityFormFromActivity(activity));
+    setSelectedBadges(activity.badges || []);
     setIsEditDialogOpen(true);
   };
 
@@ -165,9 +179,7 @@ export const ActivitiesManagement = () => {
                 <TableCell>{activity.title}</TableCell>
                 <TableCell>{activity.content}</TableCell>
                 <TableCell>{activity.location}</TableCell>
-                <TableCell>
-                  {formatDate(activity.created_at)}
-                </TableCell>
+                <TableCell>{formatDate(activity.created_at)}</TableCell>
                 <TableCell className="text-right space-x-2">
                   <Button
                     variant="outline"
@@ -195,9 +207,11 @@ export const ActivitiesManagement = () => {
         isOpen={isCreateDialogOpen}
         onOpenChange={setIsCreateDialogOpen}
         form={form}
-        onFormChange={(changes) => setForm((prev) => ({ ...prev, ...changes }))}
+        onFormChange={handleSetForm}
         onSubmit={handleCreate}
-        isLoading={isMutationLoading}
+        isLoading={isMutationLoading || isBadgeMutationLoading}
+        selectedBadges={selectedBadges}
+        onSelectedBadgesChange={setSelectedBadges}
       />
 
       {editingActivity && (
@@ -206,12 +220,12 @@ export const ActivitiesManagement = () => {
           isOpen={isEditDialogOpen}
           onOpenChange={setIsEditDialogOpen}
           form={form}
-          onFormChange={(changes) =>
-            setForm((prev) => ({ ...prev, ...changes }))
-          }
+          onFormChange={handleSetForm}
           onSubmit={handleEdit}
-          isLoading={isMutationLoading}
+          isLoading={isMutationLoading || isBadgeMutationLoading}
           activity={editingActivity}
+          selectedBadges={selectedBadges}
+          onSelectedBadgesChange={setSelectedBadges}
         />
       )}
     </div>

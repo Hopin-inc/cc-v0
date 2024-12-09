@@ -6,7 +6,9 @@ export type ProjectType = Tables<"projects">;
 
 export type ContributionType = Tables<"contribution_types">;
 
-export type ActivityType = Tables<"activities">;
+export type ActivityType = Tables<"activities"> & {
+  badges: Badge[];
+};
 
 export type Badge = Tables<"badges">;
 
