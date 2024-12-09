@@ -36,12 +36,15 @@ export function ProjectStats() {
   return (
     <div className="grid gap-4 grid-cols-2">
       {stats.map((stat, index) => (
-        <Card key={index} className="flex flex-col justify-between p-3 pb-2">
+        <Card
+          key={index}
+          className="flex flex-col justify-between p-3 pb-2 shadow-sm border-muted bg-gradient-to-b from-card to-muted/20"
+        >
           <div className="flex items-center space-x-2">
-            <div className="p-1.5 bg-primary/10 rounded-full">
-              <stat.icon className="h-4 w-4 text-primary" />
+            <div className="p-1.5 bg-primary/5 rounded-full">
+              <stat.icon className="h-4 w-4 text-primary/80" />
             </div>
-            <p className="text-sm font-medium text-muted-foreground">
+            <p className="text-sm font-medium text-muted-foreground/80">
               {stat.title}
             </p>
           </div>

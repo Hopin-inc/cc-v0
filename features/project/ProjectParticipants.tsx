@@ -53,8 +53,8 @@ export function ProjectParticipants() {
 
   return (
     <Card className="w-full">
-      <CardHeader className="flex flex-row items-center justify-between py-4">
-        <CardTitle className="text-xl font-semibold text-muted-foreground">
+      <CardHeader>
+        <CardTitle className="text-xl font-semibold text-muted-foreground/80">
           関係者マップ
         </CardTitle>
         <Select value={selectedYear} onValueChange={handleYearChange}>

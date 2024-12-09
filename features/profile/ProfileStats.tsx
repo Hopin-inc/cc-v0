@@ -39,8 +39,11 @@ export function ProfileStats({ userProfile, isLoading }: ProfileStatsProps) {
     return (
       <div className="grid gap-4 grid-cols-2">
         {[...Array(2)].map((_, i) => (
-          <Card key={i} className="p-3">
-            <div className="flex items-center space-x-2 mb-2">
+          <Card
+            key={i}
+            className="p-3"
+          >
+            <div className="flex items-center space-x-2 mb-3">
               <div className="h-7 w-7 bg-muted rounded-full animate-pulse" />
               <div className="h-4 w-16 bg-muted rounded animate-pulse" />
             </div>
@@ -86,12 +89,15 @@ export function ProfileStats({ userProfile, isLoading }: ProfileStatsProps) {
   return (
     <div className="grid gap-4 grid-cols-2">
       {stats.map((stat, index) => (
-        <Card key={index} className="p-3">
-          <div className="flex items-center space-x-2 mb-2">
-            <div className="p-1.5 bg-primary/10 rounded-full">
-              <stat.icon className="h-4 w-4 text-primary" />
+        <Card
+          key={index}
+          className="p-3"
+        >
+          <div className="flex items-center space-x-2 mb-3">
+            <div className="p-1.5 bg-primary/5 rounded-full">
+              <stat.icon className="h-4 w-4 text-primary/80" />
             </div>
-            <p className="text-xs font-medium text-muted-foreground">
+            <p className="text-xs font-medium text-muted-foreground/80">
               {stat.title}
             </p>
           </div>

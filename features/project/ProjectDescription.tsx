@@ -33,7 +33,7 @@ export function ProjectDescription({
   if (isLoading) {
     return (
       <Card>
-        <CardHeader className="py-4">
+        <CardHeader>
           <Skeleton className="h-7 w-32" />
         </CardHeader>
         <CardContent>
@@ -58,8 +58,8 @@ export function ProjectDescription({
 
   return (
     <Card>
-      <CardHeader className="py-4">
-        <CardTitle className="text-xl text-muted-foreground font-semibold">
+      <CardHeader>
+        <CardTitle className="text-xl font-semibold text-muted-foreground/80">
           プロジェクト概要
         </CardTitle>
       </CardHeader>

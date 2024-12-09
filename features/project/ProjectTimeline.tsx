@@ -18,7 +18,7 @@ export function ProjectTimeline() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-xl font-semibold text-muted-foreground">
+        <CardTitle className="text-xl font-semibold text-muted-foreground/80">
           活動年表
         </CardTitle>
       </CardHeader>
