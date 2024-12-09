@@ -5,8 +5,8 @@ import { ProjectStats } from "@/features/project";
 
 export function ProjectOverviewCard() {
   return (
-    <Card className="border-0 shadow-none mb-4">
-      <CardContent className="space-y-4 p-0">
+    <div className="border-0 shadow-none mb-4">
+      <div className="space-y-4 p-0">
         <ProjectStats />
         <Link
           href="/project"
@@ -17,7 +17,7 @@ export function ProjectOverviewCard() {
           </span>
           <ArrowRight className="h-4 w-4 text-primary" />
         </Link>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
