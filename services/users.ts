@@ -70,7 +70,24 @@ export const usersService = {
       .eq("id", userId);
 
     if (error) {
-      throw new Error("Failed to update thumbnail URL");
+      throw error;
     }
+  },
+
+  getUsers: async (): Promise<UserProfile[]> => {
+    const supabase = createSupabaseClient();
+    const { data, error } = await supabase
+      .from("users")
+      .select(`
+        *,
+        badges (*)
+      `)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      throw error;
+    }
+
+    return data || [];
   },
 };
