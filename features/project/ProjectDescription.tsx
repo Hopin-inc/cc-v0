@@ -12,7 +12,10 @@ import {
   Instagram,
   FileText,
 } from "lucide-react";
-import { toast } from "sonner";
+import { useCurrentProjectContext } from "@/contexts/ProjectContext";
+import { useJoinProject } from "@/hooks/useJoinProject";
+import { Users } from "lucide-react";
+import { useEffect } from "react";
 
 type ProjectDescriptionProps = {
   isLoading: boolean;
@@ -23,12 +26,19 @@ export function ProjectDescription({
   isLoading,
   project,
 }: ProjectDescriptionProps) {
-  const handleSupport = () => {
-    toast.success("ありがとうございます！", {
-      description: "プロジェクトへの応援、心より感謝いたします。",
-      duration: 3000,
-    });
-  };
+  const { currentProject } = useCurrentProjectContext();
+  const {
+    isLoading: isJoinLoading,
+    isJoined,
+    joinProject,
+    checkJoinStatus,
+  } = useJoinProject(currentProject?.id ?? "");
+
+  useEffect(() => {
+    if (currentProject?.id) {
+      checkJoinStatus();
+    }
+  }, [currentProject?.id, checkJoinStatus]);
 
   if (isLoading) {
     return (
@@ -92,8 +102,13 @@ export function ProjectDescription({
               );
             })}
           </div>
-          <Button onClick={handleSupport} className="w-auto text-base">
-            <Heart className="mr-2 h-4 w-4" /> 応援する
+          <Button
+            onClick={joinProject}
+            className="w-auto text-base"
+            disabled={isJoinLoading || isJoined}
+          >
+            <Users className="mr-2 h-4 w-4" />
+            {isJoined ? "参加中" : "参加する"}
           </Button>
         </div>
       </CardContent>
