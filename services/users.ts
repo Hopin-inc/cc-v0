@@ -82,7 +82,7 @@ export const usersService = {
         *,
         badges (*)
       `)
-      .order("created_at", { ascending: false });
+      .order("total_points", { ascending: false });
 
     if (error) {
       throw error;

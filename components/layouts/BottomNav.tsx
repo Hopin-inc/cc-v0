@@ -12,9 +12,9 @@ export function BottomNav() {
   const navigation = [
     {
       name: "ホーム",
-      href: "/feed",
+      href: "/",
       icon: Home,
-      current: pathname === "/feed",
+      current: pathname.startsWith("/feed"),
     },
     {
       name: "探す",

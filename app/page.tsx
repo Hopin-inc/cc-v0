@@ -1,6 +1,8 @@
+"use client";
+import { useCurrentProjectContext } from "@/contexts/ProjectContext";
 import { redirect } from "next/navigation";
-import { DEFAULT_PROJECT } from "@/config";
 
 export default function Home() {
-  redirect(`/feed/${DEFAULT_PROJECT.slug}`);
+  const { currentProject } = useCurrentProjectContext();
+  redirect(currentProject ? `/feed/${currentProject.slug}` : "/feed");
 }

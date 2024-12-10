@@ -25,7 +25,7 @@ export function ProjectOverviewCard({ projectSlug }: ProjectPageProps) {
             href={`/p/${currentProject?.slug || DEFAULT_PROJECT.slug}`}
             className="flex items-center gap-1 text-sm text-muted-foreground hover:text-primary group transition-transform duration-200"
           >
-            プロジェクトの詳細を見る
+            プロジェクト詳細
             <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </Link>
         </div>
