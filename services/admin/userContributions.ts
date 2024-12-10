@@ -118,4 +118,16 @@ export const adminUserContributionsService = {
 
     return { success: true };
   },
+
+  remove: async (contributionId: string): Promise<void> => {
+    const supabase = createSupabaseClient();
+    const { error } = await supabase
+      .from("user_contributions")
+      .delete()
+      .eq("id", contributionId);
+
+    if (error) {
+      throw new Error("Failed to delete contribution");
+    }
+  },
 };

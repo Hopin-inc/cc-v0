@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { ContributionStatus } from "@/types";
 import { adminUserContributionsService } from "@/services/admin/userContributions";
-import { notificationsService } from "@/services/notifications"; 
 import { toast } from "sonner";
 
 export const useAdminContributionMutation = () => {
@@ -41,7 +40,10 @@ export const useAdminContributionMutation = () => {
         await adminUserContributionsService.approveContribution(contributionId);
         toast.success("申請を承認しました");
       } else {
-        await adminUserContributionsService.updateStatus(contributionId, status);
+        await adminUserContributionsService.updateStatus(
+          contributionId,
+          status
+        );
         toast.success("ステータスを更新しました");
       }
     } catch (err) {
@@ -55,10 +57,24 @@ export const useAdminContributionMutation = () => {
     }
   };
 
+  const remove = async (contributionId: string) => {
+    setIsLoading(true);
+    try {
+      await adminUserContributionsService.remove(contributionId);
+      toast.success("申請を削除しました");
+    } catch (err) {
+      console.error(err);
+      toast.error("申請の削除に失敗しました");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return {
     isLoading,
     error,
     updateActivity,
     updateStatus,
+    remove,
   };
 };

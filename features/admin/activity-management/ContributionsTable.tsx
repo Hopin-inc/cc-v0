@@ -19,6 +19,10 @@ import { ContributionStatus, UserContribution } from "@/types";
 import { Activity } from "./types";
 import Image from "next/image";
 import { formatDate } from "@/utils/date";
+import { Button } from "@/components/ui/button";
+import { DeleteConfirmDialog } from "@/components/elements/DeleteConfirmDialog";
+import { useState } from "react";
+import { useAdminContributionMutation } from "@/hooks/admin/useAdminContributionMutation";
 
 type ContributionsTableProps = {
   contributions: UserContribution[];
@@ -26,6 +30,7 @@ type ContributionsTableProps = {
   isLoading: boolean;
   onActivityChange: (contributionId: string, activityId: string) => void;
   onStatusChange: (contributionId: string, status: ContributionStatus) => void;
+  onRefresh: () => void;
 };
 
 export const ContributionsTable = ({
@@ -34,7 +39,30 @@ export const ContributionsTable = ({
   isLoading,
   onActivityChange,
   onStatusChange,
+  onRefresh,
 }: ContributionsTableProps) => {
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [selectedContributionId, setSelectedContributionId] = useState<
+    string | null
+  >(null);
+  const { remove } = useAdminContributionMutation();
+
+  const handleDelete = async () => {
+    if (!selectedContributionId) return;
+    try {
+      await remove(selectedContributionId);
+      setIsDeleteDialogOpen(false);
+      onRefresh();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleDeleteClick = (contributionId: string) => {
+    setSelectedContributionId(contributionId);
+    setIsDeleteDialogOpen(true);
+  };
+
   return (
     <div className="rounded-md border">
       <Table>
@@ -45,6 +73,7 @@ export const ContributionsTable = ({
             <TableHead>写真</TableHead>
             <TableHead>活動</TableHead>
             <TableHead>ステータス</TableHead>
+            <TableHead>操作</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -113,10 +142,29 @@ export const ContributionsTable = ({
                   </SelectContent>
                 </Select>
               </TableCell>
+              <TableCell>
+                <div className="flex items-center space-x-2">
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => handleDeleteClick(contribution.id)}
+                  >
+                    削除
+                  </Button>
+                </div>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
+
+      <DeleteConfirmDialog
+        isOpen={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        onConfirm={handleDelete}
+        title="申請の削除"
+        description="この申請を削除してもよろしいですか？この操作は取り消せません。"
+      />
     </div>
   );
 };

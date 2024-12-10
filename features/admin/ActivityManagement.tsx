@@ -15,7 +15,10 @@ export const ActivityManagement = () => {
   const { currentProject } = useCurrentProject();
 
   const { fetchAll, isLoading: isActivityLoading } = useAdminActivity();
-  const { fetchAll: fetchContributions, isLoading: isContributionFetchLoading } = useAdminContribution();
+  const {
+    fetchAll: fetchContributions,
+    isLoading: isContributionFetchLoading,
+  } = useAdminContribution();
   const {
     updateActivity: updateContributionActivity,
     updateStatus: updateContributionStatus,
@@ -87,9 +90,14 @@ export const ActivityManagement = () => {
       <ContributionsTable
         contributions={contributions}
         activities={activities}
-        isLoading={isContributionFetchLoading || isContributionMutationLoading || isActivityLoading}
+        isLoading={
+          isContributionFetchLoading ||
+          isContributionMutationLoading ||
+          isActivityLoading
+        }
         onActivityChange={handleActivityChange}
         onStatusChange={handleStatusChange}
+        onRefresh={loadData}
       />
     </div>
   );
