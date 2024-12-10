@@ -3,13 +3,20 @@ import { ArrowRight } from "lucide-react";
 import { ProjectStats } from "@/features/project";
 import { useCurrentProjectContext } from "@/contexts/ProjectContext";
 import { DEFAULT_PROJECT } from "@/config";
+import { useFeedState } from "@/hooks/useFeedState";
 
-export function ProjectOverviewCard() {
+type ProjectPageProps = {
+  projectSlug: string | undefined;
+};
+export function ProjectOverviewCard({ projectSlug }: ProjectPageProps) {
   const { currentProject } = useCurrentProjectContext();
+  const { feedItems } = useFeedState(
+    projectSlug ? currentProject?.id : undefined
+  );
   return (
     <div className="border-0 shadow-none mb-4">
       <div className="space-y-4 p-0">
-        <ProjectStats />
+        <ProjectStats feedItems={feedItems} />
         <Link
           href={`/p/${currentProject?.slug || DEFAULT_PROJECT.slug}`}
           className="flex items-center justify-end pb-2 group transition-transform duration-200 hover:-translate-y-0.5"

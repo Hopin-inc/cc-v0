@@ -97,6 +97,26 @@ export const activitiesService = {
     });
   },
 
+  fetchProjectActivities: async (projectId: string): Promise<FeedItem[]> => {
+    const supabase = createSupabaseClient();
+    const { data, error } = await supabase
+      .from("activities")
+      .select(`${ACTIVITIES_SELECT_QUERY}`)
+      .eq("project_id", projectId)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      throw new Error("Failed to fetch activities");
+    }
+
+    return (data || []).filter((item) => {
+      if (item.type === "contribution") {
+        return item.user_contributions.length > 0;
+      }
+      return true;
+    });
+  },
+
   fetchActivityById: async (id: string): Promise<FeedItem> => {
     const supabase = createSupabaseClient();
     const { data: activity, error } = await supabase

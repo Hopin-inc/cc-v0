@@ -10,9 +10,13 @@ import { AvatarGroup } from "@/components/ui/avatar-group";
 import { formatDate } from "@/utils/date";
 import { formatContent } from "@/utils/formatContent";
 import { ArrowUpRight, MapPin } from "lucide-react";
+import { FeedItem } from "@/types";
 
-export function ProjectTimeline() {
-  const { feedItems } = useFeedState();
+type Props = {
+  feedItems: FeedItem[];
+};
+
+export function ProjectTimeline({ feedItems }: Props) {
   const timelineEvents = generateTimelineFromFeed(feedItems);
 
   return (

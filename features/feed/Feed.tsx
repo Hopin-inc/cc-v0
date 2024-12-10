@@ -14,7 +14,7 @@ export const Feed = ({ projectSlug }: FeedProps) => {
 
   return (
     <div className="mt-4 pb-20">
-      <ProjectOverviewCard />
+      <ProjectOverviewCard projectSlug={projectSlug} />
       <IntegratedFeed projectSlug={projectSlug} />
       <ActivitySubmissionForm />
     </div>

@@ -8,9 +8,13 @@ import { calculateTotalParticipants } from "@/utils/calculateTotalParticipants";
 import { useProjectPoints } from "@/hooks/useProjectPoints";
 import { Users, Award } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { FeedItem } from "@/types";
 
-export function ProjectStats() {
-  const { feedItems } = useFeedState();
+type ProjectStatsProps = {
+  feedItems: FeedItem[];
+};
+
+export function ProjectStats({ feedItems }: ProjectStatsProps) {
   const { currentProject } = useCurrentProjectContext();
   const totalParticipants = calculateTotalParticipants(feedItems);
   const { totalPoints, isLoading, error } = useProjectPoints(

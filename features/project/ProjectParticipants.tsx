@@ -16,13 +16,14 @@ import { useRouter } from "next/navigation";
 import { roleColors } from "@/data";
 import { useFeedState } from "@/hooks/useFeedState";
 import { generateParticipantsFromFeed } from "@/utils/mapParticipants";
-import { ParticipantsByYear } from "@/types";
+import { FeedItem, ParticipantsByYear } from "@/types";
 import { useCurrentProjectContext } from "@/contexts/ProjectContext";
 
-export function ProjectParticipants() {
-  console.debug("ProjectParticipants-----");
+type Props = {
+  feedItems: FeedItem[];
+};
+export function ProjectParticipants({ feedItems }: Props) {
   const router = useRouter();
-  const { feedItems } = useFeedState();
   const { currentProject } = useCurrentProjectContext();
   const participantsByYear = generateParticipantsFromFeed(
     currentProject,

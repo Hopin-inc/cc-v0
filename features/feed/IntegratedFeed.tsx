@@ -11,12 +11,12 @@ type Props = {
 };
 export function IntegratedFeed({ projectSlug }: Props) {
   const { data: projects } = useProjects();
-  
+
   const projectId = projectSlug
     ? projects?.find((project) => project.slug === projectSlug)?.id
     : undefined;
 
-    const {
+  const {
     onPhotoClick,
     selectedActivityId,
     setSelectedActivityId,

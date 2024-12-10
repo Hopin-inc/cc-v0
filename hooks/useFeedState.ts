@@ -18,20 +18,11 @@ export const useFeedState = (projectId?: string) => {
     setIsLoading(true);
     try {
       const data = await getCachedData(() =>
-        activitiesService.fetchFeedItems()
+        projectId
+          ? activitiesService.fetchProjectActivities(projectId)
+          : activitiesService.fetchFeedItems()
       );
-      const filteredData = data.filter((item) => {
-        // Filter by project if projectId is provided
-        if (projectId && item.project_id !== projectId) {
-          return false;
-        }
-        // Filter out empty contributions
-        if (item.type === "contribution") {
-          return item.user_contributions.length > 0;
-        }
-        return true;
-      });
-      setFeedItems(filteredData);
+      setFeedItems(data);
     } catch (err) {
       setError(err as Error);
     } finally {
