@@ -20,6 +20,7 @@ import { ParticipantsByYear } from "@/types";
 import { useCurrentProjectContext } from "@/contexts/ProjectContext";
 
 export function ProjectParticipants() {
+  console.debug("ProjectParticipants-----");
   const router = useRouter();
   const { feedItems } = useFeedState();
   const { currentProject } = useCurrentProjectContext();

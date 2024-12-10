@@ -1,5 +1,6 @@
 "use client";
 
+import { useCurrentProjectContext } from "@/contexts/ProjectContext";
 import {
   ProjectStats,
   ProjectDescription,

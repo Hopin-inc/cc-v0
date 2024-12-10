@@ -79,6 +79,7 @@ export const activitiesService = {
   fetchFeedItems: async (): Promise<FeedItem[]> => {
     const supabase = createSupabaseClient();
 
+    // 承認済みの活動を取得
     const { data: activities, error: activitiesError } = await supabase
       .from("activities")
       .select(`${ACTIVITIES_SELECT_QUERY}`)

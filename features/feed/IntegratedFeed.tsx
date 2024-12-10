@@ -4,15 +4,25 @@ import { PhotoAlbumModal } from "@/components/elements";
 import { FeedItemRenderer } from "@/features/feed";
 import { useFeedState } from "@/hooks/useFeedState";
 import { FeedSkeleton } from "./FeedSkeleton";
+import { useProjects } from "@/hooks/useProjects";
 
-export function IntegratedFeed() {
-  const {
+type Props = {
+  projectSlug?: string;
+};
+export function IntegratedFeed({ projectSlug }: Props) {
+  const { data: projects } = useProjects();
+  
+  const projectId = projectSlug
+    ? projects?.find((project) => project.slug === projectSlug)?.id
+    : undefined;
+
+    const {
     onPhotoClick,
     selectedActivityId,
     setSelectedActivityId,
     feedItems,
     isLoading,
-  } = useFeedState();
+  } = useFeedState(projectId);
 
   const selectedActivity = selectedActivityId
     ? feedItems.find((item) => item.id === selectedActivityId)
@@ -32,6 +42,7 @@ export function IntegratedFeed() {
               key={item.id}
               item={item}
               onPhotoClick={onPhotoClick}
+              showProject={!projectSlug}
             />
           ))}
           {selectedActivity && (

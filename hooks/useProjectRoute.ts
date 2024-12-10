@@ -9,10 +9,14 @@ type UseProjectRouteProps = {
   redirectPath: "p" | "feed";
 };
 
-export const useProjectRoute = ({ projectSlug, redirectPath }: UseProjectRouteProps) => {
+export const useProjectRoute = ({
+  projectSlug,
+  redirectPath,
+}: UseProjectRouteProps) => {
   const router = useRouter();
   const { data: projects } = useProjects();
-  const { currentProject, setCurrentProject, isLoading } = useCurrentProjectContext();
+  const { currentProject, setCurrentProject, isLoading } =
+    useCurrentProjectContext();
 
   useEffect(() => {
     if (!projects.length) return;
@@ -24,7 +28,7 @@ export const useProjectRoute = ({ projectSlug, redirectPath }: UseProjectRoutePr
     if (currentProject?.slug !== projectSlug) {
       setCurrentProject(project);
     }
-  }, [projectSlug, projects, router, currentProject, redirectPath]);
+  }, [projectSlug, projects, redirectPath]);
 
   return {
     currentProject,
