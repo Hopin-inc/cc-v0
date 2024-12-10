@@ -6,6 +6,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/utils/cn";
 import { ProjectSelector } from "@/components/elements/ProjectSelector";
+import { Button } from "@/components/ui/button";
+import { Home } from "lucide-react";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -57,27 +59,25 @@ const getAdminPath = (projectId: string, path: AdminPath) => {
 
 export function AdminLayout({ children }: AdminLayoutProps) {
   const pathname = usePathname();
-  const projectId = pathname.split("/")[2]; // Extract project_id from URL
+  const projectId = pathname.split("/")[2];
 
   return (
     <div className="min-h-screen">
       <header className="fixed top-0 left-0 right-0 bg-background border-b z-50 h-14">
         <div className="max-w-screen-2xl mx-auto px-4 py-2 flex justify-between items-center">
           <div className="flex items-center space-x-4">
-            <Link
-              href="/"
-              className="flex items-center space-x-2"
-              aria-label="ホームページへ"
+            <Button
+              variant="ghost"
+              size="sm"
+              asChild
+              className="text-muted-foreground hover:text-foreground"
             >
-              <img
-                src={DEFAULT_PROJECT.thumbnail_url}
-                className="w-7 h-7 rounded-full flex-shrink-0"
-                alt="logo"
-              />
-              <h1 className="text-lg font-bold text-foreground">
-                {DEFAULT_PROJECT.name}
-              </h1>
-            </Link>
+              <Link href="/" className="flex items-center space-x-2">
+                <Home className="h-4 w-4" />
+                <span>ホームに戻る</span>
+              </Link>
+            </Button>
+            <div className="h-6 w-px bg-border" />
             <ProjectSelector />
           </div>
           <Notifications />
@@ -89,7 +89,6 @@ export function AdminLayout({ children }: AdminLayoutProps) {
             <ul className="space-y-2">
               {sidebarItems.map((item) => {
                 const href = getAdminPath(projectId, item.path);
-                console.log(href, projectId, item.path);
                 return (
                   <li key={item.path}>
                     <Link
