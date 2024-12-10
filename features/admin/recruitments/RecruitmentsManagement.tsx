@@ -178,6 +178,7 @@ export const RecruitmentsManagement = () => {
               <TableHead>タイトル</TableHead>
               <TableHead>内容</TableHead>
               <TableHead>場所</TableHead>
+              <TableHead>バッジ</TableHead>
               <TableHead>作成日</TableHead>
               <TableHead className="text-right">操作</TableHead>
             </TableRow>
@@ -189,6 +190,18 @@ export const RecruitmentsManagement = () => {
                 <TableCell>{activity.title}</TableCell>
                 <TableCell>{activity.content}</TableCell>
                 <TableCell>{activity.location}</TableCell>
+                <TableCell>
+                  <div className="flex flex-wrap gap-1">
+                    {activity.activity_badges?.map((activityBadge) => (
+                      <div
+                        key={activityBadge.badge_id}
+                        className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-primary/10 text-primary"
+                      >
+                        {activityBadge.badges.name}
+                      </div>
+                    ))}
+                  </div>
+                </TableCell>
                 <TableCell>{formatDate(activity.created_at)}</TableCell>
                 <TableCell className="text-right space-x-2">
                   <Button

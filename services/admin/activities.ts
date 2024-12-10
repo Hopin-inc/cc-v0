@@ -7,7 +7,13 @@ export const adminActivitiesService = {
     const supabase = createSupabaseClient();
     const query = supabase
       .from("activities")
-      .select("*")
+      .select(`
+        *,
+        activity_badges (
+          *,
+          badges (*)
+        )
+      `)
       .eq("project_id", projectId)
       .order("created_at", { ascending: false });
 
