@@ -27,7 +27,7 @@ export function FeedItem({
       <CardContent className="p-6 space-y-4">
         {showProject && project && (
           <div className="flex items-center space-x-2 mb-2">
-            <div className="w-5 h-5 rounded-full bg-gradient-to-br from-primary to-primary/80 flex-shrink-0" />
+            <div className="w-5 h-5 rounded-full bg-gradient-to-br from-gray-300 to-gray-200 flex-shrink-0" />
             <Link
               href={`/p/${project.slug}`}
               className="text-sm font-medium text-muted-foreground hover:text-primary hover:underline"

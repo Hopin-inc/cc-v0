@@ -1,25 +1,46 @@
 import { createSupabaseClient } from "./base";
 import { ProjectType } from "@/types";
 
-export const projectsService = {
-  getCurrentProject: async (): Promise<ProjectType> => {
-    const supabase = createSupabaseClient();
+type UserProjectsProject = {
+  project: ProjectType;
+};
 
-    const { data, error } = await supabase
-      .from("projects")
-      .select("*")
-      .order("created_at", { ascending: true })
-      // 便宜的に最新のプロジェクトを現在のプロジェクトとして取得
-      .limit(1)
-      .single();
-    if (error || !data) {
-      throw new Error("Failed to fetch user profile");
+export const projectsService = {
+  getCurrentProject: async (): Promise<ProjectType | null> => {
+    const supabase = createSupabaseClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return null;
     }
 
-    // Set the current project ID in a cookie for middleware
-    document.cookie = `current-project-id=${data}; path=/`;
+    // ユーザーに紐づいているプロジェクトのうち、最も古いものを取得
+    const { data, error } = await supabase
+      .from("user_projects")
+      .select(
+        `
+        project:projects (
+          *
+        )
+      `
+      )
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: true })
+      .returns<UserProjectsProject[]>()
+      .limit(1)
+      .single();
 
-    return data;
+    if (error) {
+      if (error.code === "PGRST116") {
+        // レコードが見つからない場合
+        return null;
+      }
+      throw error;
+    }
+
+    return data?.project || null;
   },
 
   /**

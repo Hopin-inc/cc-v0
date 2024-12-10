@@ -17,8 +17,9 @@ export const useCurrentProject = (): ReturnType => {
   );
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
-  const { getCachedData, invalidateCache } =
-    useCache<ProjectType>("current-project");
+  const { getCachedData, invalidateCache } = useCache<ProjectType | null>(
+    "current-project"
+  );
 
   const fetchProject = useCallback(
     async (forceFetch = false) => {
@@ -29,7 +30,9 @@ export const useCurrentProject = (): ReturnType => {
           () => projectsService.getCurrentProject(),
           forceFetch
         );
-        setCurrentProject(data);
+        if (data) {
+          setCurrentProject(data);
+        }
       } catch (err) {
         setError(
           err instanceof Error ? err : new Error("Failed to fetch project")
