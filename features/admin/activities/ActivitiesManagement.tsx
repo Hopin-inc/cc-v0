@@ -24,6 +24,7 @@ import {
   initialActivityFormState,
 } from "./types";
 import { formatDate } from "@/utils/date";
+import { DeleteConfirmDialog } from "@/components/elements/DeleteConfirmDialog";
 
 export const ActivitiesManagement = () => {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
@@ -40,6 +41,10 @@ export const ActivitiesManagement = () => {
   );
   const [activities, setActivities] = useState<FeedItem[]>([]);
   const [selectedBadges, setSelectedBadges] = useState<BadgeType[]>([]);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [selectedActivityId, setSelectedActivityId] = useState<string | null>(
+    null
+  );
   const { currentProject } = useCurrentProject();
   const { currentUser } = useCurrentUserContext();
 
@@ -124,17 +129,21 @@ export const ActivitiesManagement = () => {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!window.confirm("本当に削除しますか？")) return;
-
+  const handleDelete = async () => {
+    if (!selectedActivityId) return;
     try {
-      await remove(id);
-      loadData();
+      await remove(selectedActivityId);
       toast.success("活動を削除しました");
+      setIsDeleteDialogOpen(false);
+      loadData();
     } catch (error) {
-      console.error("Failed to delete activity:", error);
-      toast.error("活動を削除できませんでした");
+      toast.error("活動の削除に失敗しました");
     }
+  };
+
+  const handleDeleteClick = (activityId: string) => {
+    setSelectedActivityId(activityId);
+    setIsDeleteDialogOpen(true);
   };
 
   const resetForm = () => {
@@ -191,7 +200,7 @@ export const ActivitiesManagement = () => {
                   <Button
                     variant="destructive"
                     size="sm"
-                    onClick={() => handleDelete(activity.id)}
+                    onClick={() => handleDeleteClick(activity.id)}
                   >
                     削除
                   </Button>
@@ -228,6 +237,14 @@ export const ActivitiesManagement = () => {
           onSelectedBadgesChange={setSelectedBadges}
         />
       )}
+
+      <DeleteConfirmDialog
+        isOpen={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        onConfirm={handleDelete}
+        title="活動の削除"
+        description="この活動を削除してもよろしいですか？この操作は取り消せません。"
+      />
     </div>
   );
 };

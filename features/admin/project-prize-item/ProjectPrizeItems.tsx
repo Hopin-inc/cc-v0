@@ -27,6 +27,7 @@ import { useCurrentProjectContext } from "@/contexts/ProjectContext";
 import { TablesInsert } from "@/types/supabase";
 import { toast } from "sonner";
 import { formatDate } from "@/utils/date";
+import { DeleteConfirmDialog } from "@/components/elements/DeleteConfirmDialog";
 
 const INITIAL_FORM_STATE: TablesInsert<"project_prize_items"> = {
   name: "",
@@ -255,32 +256,14 @@ export function ProjectPrizeItems() {
         </DialogContent>
       </Dialog>
 
-      <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>特典の削除</DialogTitle>
-            <DialogDescription>
-              この特典を削除してもよろしいですか？この操作は取り消せません。
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter className="mt-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setIsDeleteDialogOpen(false)}
-            >
-              キャンセル
-            </Button>
-            <Button
-              type="button"
-              variant="destructive"
-              onClick={handleConfirmDelete}
-            >
-              削除
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <DeleteConfirmDialog
+        isOpen={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        onConfirm={handleConfirmDelete}
+        title="特典の削除"
+        description="この特典を削除してもよろしいですか？"
+        isLoading={false}
+      />
     </div>
   );
 }

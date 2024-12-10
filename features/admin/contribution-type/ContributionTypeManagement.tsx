@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { ContributionTypeDialog } from "./ContributionTypeDialog";
+import { DeleteConfirmDialog } from "@/components/elements/DeleteConfirmDialog";
 import {
   ContributionTypeFormState,
   createContributionTypeFormFromType,
@@ -31,6 +32,8 @@ export const ContributionTypeManagement = () => {
   const [contributionTypes, setContributionTypes] = useState<
     ContributionType[]
   >([]);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [selectedTypeId, setSelectedTypeId] = useState<string | null>(null);
 
   const { fetchAll, isLoading: isFetchLoading } = useAdminContributionType();
   const {
@@ -99,17 +102,21 @@ export const ContributionTypeManagement = () => {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!window.confirm("本当に削除しますか？")) return;
-
+  const handleDelete = async () => {
+    if (!selectedTypeId) return;
     try {
-      await remove(id);
-      loadData();
+      await remove(selectedTypeId);
       toast.success("活動種別を削除しました");
+      setIsDeleteDialogOpen(false);
+      loadData();
     } catch (error) {
-      console.error("Error deleting contribution type:", error);
       toast.error("活動種別の削除に失敗しました");
     }
+  };
+
+  const handleDeleteClick = (typeId: string) => {
+    setSelectedTypeId(typeId);
+    setIsDeleteDialogOpen(true);
   };
 
   const resetForm = () => {
@@ -156,7 +163,7 @@ export const ContributionTypeManagement = () => {
                   <Button
                     variant="destructive"
                     size="sm"
-                    onClick={() => handleDelete(type.id)}
+                    onClick={() => handleDeleteClick(type.id)}
                   >
                     削除
                   </Button>
@@ -191,6 +198,14 @@ export const ContributionTypeManagement = () => {
           type={editingType}
         />
       )}
+
+      <DeleteConfirmDialog
+        isOpen={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        onConfirm={handleDelete}
+        title="活動種別の削除"
+        description="この活動種別を削除してもよろしいですか？この操作は取り消せません。"
+      />
     </div>
   );
 };

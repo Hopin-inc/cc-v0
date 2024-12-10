@@ -24,6 +24,7 @@ import {
   initialActivityFormState,
 } from "../activities/types";
 import { formatDate } from "@/utils/date";
+import { DeleteConfirmDialog } from "@/components/elements/DeleteConfirmDialog";
 
 export const RecruitmentsManagement = () => {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
@@ -40,6 +41,10 @@ export const RecruitmentsManagement = () => {
   );
   const [recruitments, setRecruitments] = useState<FeedItem[]>([]);
   const [selectedBadges, setSelectedBadges] = useState<BadgeType[]>([]);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [selectedRecruitmentId, setSelectedRecruitmentId] = useState<
+    string | null
+  >(null);
   const { currentProject } = useCurrentProject();
   const { currentUser } = useCurrentUserContext();
 
@@ -125,17 +130,21 @@ export const RecruitmentsManagement = () => {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!window.confirm("本当に削除しますか？")) return;
-
+  const handleDelete = async () => {
+    if (!selectedRecruitmentId) return;
     try {
-      await remove(id);
-      loadData();
+      await remove(selectedRecruitmentId);
       toast.success("ゆる募を削除しました");
+      setIsDeleteDialogOpen(false);
+      loadData();
     } catch (error) {
-      console.error("Failed to delete recruitment:", error);
-      toast.error("ゆる募を削除できませんでした");
+      toast.error("ゆる募の削除に失敗しました");
     }
+  };
+
+  const handleDeleteClick = (recruitmentId: string) => {
+    setSelectedRecruitmentId(recruitmentId);
+    setIsDeleteDialogOpen(true);
   };
 
   const resetForm = () => {
@@ -192,7 +201,7 @@ export const RecruitmentsManagement = () => {
                   <Button
                     variant="destructive"
                     size="sm"
-                    onClick={() => handleDelete(activity.id)}
+                    onClick={() => handleDeleteClick(activity.id)}
                   >
                     削除
                   </Button>
@@ -231,6 +240,14 @@ export const RecruitmentsManagement = () => {
           onSelectedBadgesChange={setSelectedBadges}
         />
       )}
+
+      <DeleteConfirmDialog
+        isOpen={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        onConfirm={handleDelete}
+        title="ゆる募の削除"
+        description="このゆる募を削除してもよろしいですか？この操作は取り消せません。"
+      />
     </div>
   );
 };

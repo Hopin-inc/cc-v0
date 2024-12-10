@@ -23,6 +23,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { DeleteConfirmDialog } from "@/components/elements/DeleteConfirmDialog";
 
 export function BadgeManagement() {
   const {
@@ -42,6 +43,8 @@ export function BadgeManagement() {
     name: "",
     value: "",
   });
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [selectedBadgeId, setSelectedBadgeId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchBadges();
@@ -70,6 +73,21 @@ export function BadgeManagement() {
       value: badge.value,
     });
     setIsOpen(true);
+  };
+
+  const handleDelete = async () => {
+    if (!selectedBadgeId) return;
+    try {
+      await deleteBadge(selectedBadgeId);
+      setIsDeleteDialogOpen(false);
+    } catch (error) {
+      console.error("バッジの削除に失敗しました");
+    }
+  };
+
+  const handleDeleteClick = (badgeId: string) => {
+    setSelectedBadgeId(badgeId);
+    setIsDeleteDialogOpen(true);
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -115,7 +133,7 @@ export function BadgeManagement() {
                     <Button
                       variant="destructive"
                       size="sm"
-                      onClick={() => deleteBadge(badge.id)}
+                      onClick={() => handleDeleteClick(badge.id)}
                     >
                       削除
                     </Button>
@@ -162,13 +180,19 @@ export function BadgeManagement() {
               <Button type="button" variant="outline" onClick={handleClose}>
                 キャンセル
               </Button>
-              <Button type="submit">
-                {selectedBadge ? "更新" : "作成"}
-              </Button>
+              <Button type="submit">{selectedBadge ? "更新" : "作成"}</Button>
             </DialogFooter>
           </form>
         </DialogContent>
       </Dialog>
+
+      <DeleteConfirmDialog
+        isOpen={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        onConfirm={handleDelete}
+        title="バッジの削除"
+        description="このバッジを削除してもよろしいですか？"
+      />
     </div>
   );
 }

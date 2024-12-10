@@ -5,7 +5,7 @@ import { DEFAULT_PROJECT } from "@/config";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/utils/cn";
-import { ProjectSelector } from "@/components/project/ProjectSelector";
+import { ProjectSelector } from "@/components/elements/ProjectSelector";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -89,7 +89,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
             <ul className="space-y-2">
               {sidebarItems.map((item) => {
                 const href = getAdminPath(projectId, item.path);
-                console.log(href, projectId, item.path);  
+                console.log(href, projectId, item.path);
                 return (
                   <li key={item.path}>
                     <Link
