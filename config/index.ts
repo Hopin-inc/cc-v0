@@ -5,6 +5,7 @@ export const IS_DEV = ENV === "development";
 
 export const DEFAULT_PROJECT = {
   name: "アルケDAO",
+  slug: "arche-dao",
   thumbnail_url:
     "https://archedao.my.canva.site/media/195ac5ba3f853027fa691e73776a3f11.png",
   description:

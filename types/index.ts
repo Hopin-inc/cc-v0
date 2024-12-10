@@ -2,7 +2,9 @@
 
 import { Tables } from "./supabase";
 
-export type ProjectType = Tables<"projects">;
+export type ProjectType = Tables<"projects"> & {
+  slug: string;
+};
 
 export type ContributionType = Tables<"contribution_types">;
 

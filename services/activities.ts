@@ -76,7 +76,7 @@ export const activitiesService = {
     return uniqueActivities;
   },
 
-  fetchFeedItems: async (): Promise<FeedItem[]> => {
+  fetchFeedItems: async (projectId: string): Promise<FeedItem[]> => {
     const supabase = createSupabaseClient();
 
     // 承認済みの活動を取得
@@ -85,6 +85,7 @@ export const activitiesService = {
       .select(`${ACTIVITIES_SELECT_QUERY}`)
       .match({
         type: "contribution",
+        project_id: projectId,
         "user_contributions.status": "approved",
       })
       .not("user_contributions", "is", null)
@@ -98,7 +99,10 @@ export const activitiesService = {
     const { data: recruitments, error: recruitmentsError } = await supabase
       .from("activities")
       .select(`${ACTIVITIES_SELECT_QUERY}`)
-      .eq("type", "recruitment")
+      .match({
+        type: "recruitment",
+        project_id: projectId,
+      })
       .order("date", { ascending: false });
 
     if (recruitmentsError) {

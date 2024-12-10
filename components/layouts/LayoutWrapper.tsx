@@ -26,11 +26,12 @@ export function LayoutWrapper({ children }: LayoutWrapperProps) {
               className="flex items-center space-x-2"
               aria-label="ホームページへ"
             >
-              <img
+              {/* <img
                 src={DEFAULT_PROJECT.thumbnail_url}
                 className="w-7 h-7 rounded-full flex-shrink-0"
                 alt="logo"
-              />
+              /> */}
+              <div className="w-7 h-7 rounded-full flex-shrink-0 bg-gradient-to-br from-primary to-primary/80" />
               <h1 className="text-lg font-bold text-foreground">
                 {currentProject?.name || DEFAULT_PROJECT.name}
               </h1>

@@ -1,33 +1,41 @@
-import { useState, useEffect } from "react";
+import { useCallback, useState, useEffect } from "react";
+import { FeedItem } from "@/types";
 import { activitiesService } from "@/services/activities";
-import type { FeedItem } from "@/types";
 import { useCache } from "./useCache";
+import { useCurrentProjectContext } from "@/contexts/ProjectContext";
 
-export function useFeedState() {
+export const useFeedState = () => {
   const [selectedActivityId, setSelectedActivityId] = useState<string | null>(
     null
   );
 
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
   const [feedItems, setFeedItems] = useState<FeedItem[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const { getCachedData } = useCache<FeedItem[]>("feed-items");
+  const { currentProject } = useCurrentProjectContext();
+  const { getCachedData, invalidateCache } = useCache<FeedItem[]>(
+    `feed-items-${currentProject?.slug}`
+  );
 
-  const loadFeedItems = async () => {
+  const loadFeedItems = useCallback(async () => {
+    setIsLoading(true);
     try {
-      const data = await getCachedData(() =>
-        activitiesService.fetchFeedItems()
+      if (!currentProject?.id) return;
+      const data = await getCachedData(
+        () => activitiesService.fetchFeedItems(currentProject.id),
+        true
       );
       setFeedItems(data);
-    } catch (error) {
-      console.error("Failed to load feed items:", error);
+    } catch (err) {
+      setError(err as Error);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [currentProject?.id]);
 
   useEffect(() => {
     loadFeedItems();
-  }, []);
+  }, [loadFeedItems]);
 
   const onPhotoClick = (activityId: string) => {
     setSelectedActivityId(activityId);
@@ -40,5 +48,9 @@ export function useFeedState() {
     feedItems,
     setFeedItems,
     isLoading,
+    refetch: () => {
+      invalidateCache();
+      return loadFeedItems();
+    },
   };
-}
+};

@@ -91,13 +91,6 @@ export type Database = {
             referencedRelation: "badges"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "project_badges_project_id_fkey"
-            columns: ["activity_id"]
-            isOneToOne: false
-            referencedRelation: "projects"
-            referencedColumns: ["id"]
-          },
         ]
       }
       badges: {
@@ -237,18 +230,21 @@ export type Database = {
           description: string | null
           id: string
           name: string
+          slug: string
         }
         Insert: {
           created_at?: string
           description?: string | null
           id?: string
           name: string
+          slug?: string
         }
         Update: {
           created_at?: string
           description?: string | null
           id?: string
           name?: string
+          slug?: string
         }
         Relationships: []
       }

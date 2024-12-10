@@ -1,13 +1,6 @@
-import { ActivitySubmissionForm } from "@/features/activity";
-import { IntegratedFeed } from "@/features/feed/IntegratedFeed";
-import { ProjectOverviewCard } from "@/features/project";
+import { redirect } from "next/navigation";
+import { DEFAULT_PROJECT } from "@/config";
 
 export default function Home() {
-  return (
-    <div className="mt-4 pb-20">
-      <ProjectOverviewCard />
-      <IntegratedFeed />
-      <ActivitySubmissionForm />
-    </div>
-  );
+  redirect(`/feed/${DEFAULT_PROJECT.slug}`);
 }

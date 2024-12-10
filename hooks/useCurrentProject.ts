@@ -4,6 +4,7 @@ import { projectsService } from "@/services/projects";
 import { useCache } from "./useCache";
 
 type ReturnType = {
+  setCurrentProject: (project: ProjectType) => void;
   currentProject: ProjectType | null;
   isLoading: boolean;
   error: Error | null;
@@ -45,6 +46,7 @@ export const useCurrentProject = (): ReturnType => {
   }, []);
 
   return {
+    setCurrentProject,
     currentProject,
     isLoading,
     error,

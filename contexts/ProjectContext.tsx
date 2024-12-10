@@ -5,6 +5,7 @@ import { createContext, useContext, ReactNode } from "react";
 import { useCurrentProject } from "@/hooks/useCurrentProject";
 
 type ProjectContextType = {
+  setCurrentProject: (project: ProjectType) => void;
   currentProject: ProjectType | null;
   isLoading: boolean;
   error: Error | null;
@@ -13,11 +14,13 @@ type ProjectContextType = {
 const ProjectContext = createContext<ProjectContextType | undefined>(undefined);
 
 export const ProjectProvider = ({ children }: { children: ReactNode }) => {
-  const { currentProject, isLoading, error } = useCurrentProject();
+  const { currentProject, setCurrentProject, isLoading, error } =
+    useCurrentProject();
 
   return (
     <ProjectContext.Provider
       value={{
+        setCurrentProject,
         currentProject,
         isLoading,
         error,
