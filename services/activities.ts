@@ -76,49 +76,24 @@ export const activitiesService = {
     return uniqueActivities;
   },
 
-  fetchFeedItems: async (projectId: string): Promise<FeedItem[]> => {
+  fetchFeedItems: async (): Promise<FeedItem[]> => {
     const supabase = createSupabaseClient();
 
-    // 承認済みの活動を取得
     const { data: activities, error: activitiesError } = await supabase
       .from("activities")
       .select(`${ACTIVITIES_SELECT_QUERY}`)
-      .match({
-        type: "contribution",
-        project_id: projectId,
-        "user_contributions.status": "approved",
-      })
-      .not("user_contributions", "is", null)
       .order("date", { ascending: false });
 
     if (activitiesError) {
       throw new Error("Failed to fetch activities");
     }
 
-    // ゆる募を取得
-    const { data: recruitments, error: recruitmentsError } = await supabase
-      .from("activities")
-      .select(`${ACTIVITIES_SELECT_QUERY}`)
-      .match({
-        type: "recruitment",
-        project_id: projectId,
-      })
-      .order("date", { ascending: false });
-
-    if (recruitmentsError) {
-      throw new Error("Failed to fetch recruitments");
-    }
-
-    // 活動とゆる募を日付でソート
-    const allItems = [...(activities ?? []), ...(recruitments ?? [])].sort(
-      (a, b) => {
-        const dateA = a.date ? new Date(a.date) : new Date(a.created_at);
-        const dateB = b.date ? new Date(b.date) : new Date(b.created_at);
-        return dateB.getTime() - dateA.getTime();
+    return (activities || []).filter((item) => {
+      if (item.type === "contribution") {
+        return item.user_contributions.length > 0;
       }
-    );
-
-    return allItems;
+      return true;
+    });
   },
 
   fetchActivityById: async (id: string): Promise<FeedItem> => {
