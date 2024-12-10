@@ -5,10 +5,13 @@ import { FeedItemRenderer } from "@/features/feed";
 import { useFeedState } from "@/hooks/useFeedState";
 import { FeedSkeleton } from "./FeedSkeleton";
 import { useProjects } from "@/hooks/useProjects";
+import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
 
 type Props = {
   projectSlug?: string;
 };
+
 export function IntegratedFeed({ projectSlug }: Props) {
   const { data: projects } = useProjects();
 
@@ -30,9 +33,24 @@ export function IntegratedFeed({ projectSlug }: Props) {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-semibold text-muted-foreground mb-4">
-        最近の動向
-      </h2>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-xl font-semibold text-muted-foreground">
+          最近の動向
+        </h2>
+        {projectSlug ? (
+          <Link
+            href="/feed"
+            className="text-sm text-muted-foreground hover:text-primary flex items-center gap-1 group"
+          >
+            全てのプロジェクトの動向を見る
+            <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          </Link>
+        ) : (
+          <div className="text-sm text-muted-foreground">
+            全プロジェクトの動向
+          </div>
+        )}
+      </div>
       {isLoading ? (
         <FeedSkeleton />
       ) : (
