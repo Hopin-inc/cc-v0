@@ -174,23 +174,23 @@ export const RecruitmentsManagement = () => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>日付</TableHead>
-              <TableHead>タイトル</TableHead>
-              <TableHead>内容</TableHead>
-              <TableHead>場所</TableHead>
-              <TableHead>バッジ</TableHead>
-              <TableHead>作成日</TableHead>
-              <TableHead className="text-right">操作</TableHead>
+              <TableHead className="w-[120px]">日付</TableHead>
+              <TableHead className="w-[200px]">タイトル</TableHead>
+              <TableHead className="min-w-[300px]">内容</TableHead>
+              <TableHead className="w-[120px]">場所</TableHead>
+              <TableHead className="w-[120px]">バッジ</TableHead>
+              <TableHead className="w-[120px]">作成日</TableHead>
+              <TableHead className="w-[120px] text-right">操作</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {recruitments.map((activity) => (
               <TableRow key={activity.id}>
-                <TableCell>{activity.date}</TableCell>
-                <TableCell>{activity.title}</TableCell>
-                <TableCell>{activity.content}</TableCell>
-                <TableCell>{activity.location}</TableCell>
-                <TableCell>
+                <TableCell className="whitespace-nowrap">{activity.date}</TableCell>
+                <TableCell className="whitespace-nowrap">{activity.title}</TableCell>
+                <TableCell className="whitespace-pre-wrap">{activity.content}</TableCell>
+                <TableCell className="whitespace-nowrap">{activity.location}</TableCell>
+                <TableCell className="whitespace-nowrap">
                   <div className="flex flex-wrap gap-1">
                     {activity.activity_badges?.map((activityBadge) => (
                       <div
@@ -202,8 +202,8 @@ export const RecruitmentsManagement = () => {
                     ))}
                   </div>
                 </TableCell>
-                <TableCell>{formatDate(activity.created_at)}</TableCell>
-                <TableCell className="text-right space-x-2">
+                <TableCell className="whitespace-nowrap">{formatDate(activity.created_at)}</TableCell>
+                <TableCell className="whitespace-nowrap text-right space-x-2">
                   <Button
                     variant="outline"
                     size="sm"
