@@ -1,14 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { QRCodeSVG } from "qrcode.react";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { HalfModal } from "@/components/elements";
-import { Check, Download } from "lucide-react";
-import { exchangeItems, type ExchangeItem } from "@/data/exchangeItems";
+import { Check, Download, Gift } from "lucide-react";
 import { useCurrentUserContext } from "@/contexts/UserContext";
+import { useProjectPrizeItems } from "@/hooks/useProjectPrizeItems";
+import { ProjectPrizeItem } from "@/types";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface PointExchangeModalProps {
   isOpen: boolean;
@@ -23,7 +25,17 @@ export function PointExchangeModal({
 }: PointExchangeModalProps) {
   const { currentUser } = useCurrentUserContext();
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
-  const [exchangedItem, setExchangedItem] = useState<ExchangeItem | null>(null);
+  const [exchangedItem, setExchangedItem] = useState<ProjectPrizeItem | null>(
+    null
+  );
+  const { prizeItems, isLoading, error, fetchPrizeItems } =
+    useProjectPrizeItems();
+
+  useEffect(() => {
+    if (isOpen) {
+      fetchPrizeItems().catch(console.error);
+    }
+  }, [isOpen, fetchPrizeItems]);
 
   const handleClose = () => {
     setExchangedItem(null);
@@ -33,10 +45,10 @@ export function PointExchangeModal({
 
   const handleExchange = () => {
     if (selectedItem && currentUser) {
-      const item = exchangeItems.find((item) => item.id === selectedItem);
-      if (item && item.points <= currentUser.available_points) {
+      const item = prizeItems.find((item) => String(item.id) === selectedItem);
+      if (item && item.point <= currentUser.available_points) {
         setExchangedItem(item);
-        // #TODO: ポイントを消費する処理を追加
+        // #TODO: ポイントを消費する処理を追加
       }
     }
   };
@@ -78,59 +90,104 @@ export function PointExchangeModal({
             </div>
 
             <div className="overflow-y-auto py-4" style={{ height: "400px" }}>
-              <RadioGroup
-                value={selectedItem || ""}
-                onValueChange={setSelectedItem}
-                className="space-y-4 px-4"
-              >
-                {exchangeItems.map((item) => {
-                  const isDisabled =
-                    item.points > (currentUser?.available_points ?? 0);
-                  return (
+              {isLoading ? (
+                <div className="space-y-4 px-4">
+                  {[...Array(3)].map((_, i) => (
                     <div
-                      key={item.id}
-                      className={`flex items-start space-x-4 p-3 border border-gray-300 rounded-lg transition-colors ${
-                        isDisabled
-                          ? "opacity-50 cursor-not-allowed"
-                          : "bg-muted/50 hover:bg-muted"
-                      }`}
+                      key={i}
+                      className="flex items-start space-x-4 p-3 border border-gray-300 rounded-lg"
                     >
-                      <RadioGroupItem
-                        value={item.id}
-                        id={item.id}
-                        className="mt-1"
-                        disabled={isDisabled}
-                      />
+                      <Skeleton className="h-4 w-4 mt-1 rounded-full" />
                       <div className="flex gap-3 flex-1 min-w-0">
-                        <div className="w-20 h-20 relative flex-shrink-0">
-                          <Image
-                            src={item.image}
-                            alt={item.name}
-                            fill
-                            className="rounded-md object-cover"
-                          />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <label
-                            htmlFor={item.id}
-                            className={`font-medium cursor-pointer block text-sm ${
-                              isDisabled ? "cursor-not-allowed" : ""
-                            }`}
-                          >
-                            {item.name}
-                          </label>
-                          <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
-                            {item.description}
-                          </p>
-                          <p className="text-xs font-semibold text-foreground mt-1">
-                            {item.points}pt
-                          </p>
+                        <Skeleton className="w-20 h-20 rounded-md flex-shrink-0" />
+                        <div className="flex-1 min-w-0 space-y-2">
+                          <Skeleton className="h-4 w-32" />
+                          <Skeleton className="h-3 w-full" />
+                          <Skeleton className="h-3 w-16" />
                         </div>
                       </div>
                     </div>
-                  );
-                })}
-              </RadioGroup>
+                  ))}
+                </div>
+              ) : error ? (
+                <div className="flex items-center justify-center h-full">
+                  <p className="text-sm text-red-500">エラーが発生しました</p>
+                </div>
+              ) : prizeItems.length === 0 ? (
+                <div className="flex flex-col items-center justify-center h-full space-y-4 px-4">
+                  <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center">
+                    <Gift className="w-6 h-6 text-muted-foreground" />
+                  </div>
+                  <div className="text-center">
+                    <p className="text-sm font-medium text-foreground">
+                      特典がありません
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      現在交換可能な特典はありません。また後でチェックしてください。
+                    </p>
+                  </div>
+                </div>
+              ) : (
+                <RadioGroup
+                  value={selectedItem || ""}
+                  onValueChange={setSelectedItem}
+                  className="space-y-4 px-4"
+                >
+                  {prizeItems.map((item) => {
+                    const isDisabled =
+                      item.point > (currentUser?.available_points ?? 0);
+                    return (
+                      <div
+                        key={item.id}
+                        className={`flex items-start space-x-4 p-3 border border-gray-300 rounded-lg transition-colors ${
+                          isDisabled
+                            ? "opacity-50 cursor-not-allowed"
+                            : "bg-muted/50 hover:bg-muted"
+                        }`}
+                      >
+                        <RadioGroupItem
+                          value={String(item.id)}
+                          id={String(item.id)}
+                          className="mt-1"
+                          disabled={isDisabled}
+                        />
+                        <div className="flex gap-3 flex-1 min-w-0">
+                          <div className="w-20 h-20 relative flex-shrink-0">
+                            {item.thumbnail_url ? (
+                              <Image
+                                src={item.thumbnail_url}
+                                alt={item.name}
+                                fill
+                                className="rounded-md object-cover"
+                              />
+                            ) : (
+                              <div className="w-full h-full rounded-md bg-muted flex items-center justify-center">
+                                <Gift className="w-8 h-8 text-muted-foreground" />
+                              </div>
+                            )}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <label
+                              htmlFor={String(item.id)}
+                              className={`font-medium cursor-pointer block text-sm ${
+                                isDisabled ? "cursor-not-allowed" : ""
+                              }`}
+                            >
+                              {item.name}
+                            </label>
+                            <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
+                              {item.description}
+                            </p>
+                            <p className="text-xs font-semibold text-foreground mt-1">
+                              {item.point}pt
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </RadioGroup>
+              )}
             </div>
 
             <div className="p-4 pt-6 border-t bg-background">
@@ -138,8 +195,8 @@ export function PointExchangeModal({
                 onClick={handleExchange}
                 disabled={
                   !selectedItem ||
-                  (exchangeItems.find((item) => item.id === selectedItem)
-                    ?.points || 0) > (currentUser?.available_points ?? 0)
+                  (prizeItems.find((item) => String(item.id) === selectedItem)
+                    ?.point || 0) > (currentUser?.available_points ?? 0)
                 }
                 className="w-full"
               >
@@ -164,8 +221,8 @@ export function PointExchangeModal({
               <QRCodeSVG
                 id="qr-code"
                 value={JSON.stringify({
-                  item: typeof exchangedItem === "string" ? exchangedItem : "",
-                  id: typeof currentUser?.id === "string" ? currentUser.id : "",
+                  item_id: exchangedItem?.id,
+                  user_id: currentUser?.id,
                   date: new Date().toISOString(),
                 })}
                 size={200}

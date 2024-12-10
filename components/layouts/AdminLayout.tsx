@@ -31,6 +31,10 @@ const sidebarItems = [
     label: "バッジ管理",
     href: "/admin/badges",
   },
+  {
+    label: "特典管理",
+    href: "/admin/project-prize-items",
+  },
 ] as const;
 
 export function AdminLayout({ children }: AdminLayoutProps) {

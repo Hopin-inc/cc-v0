@@ -10,6 +10,8 @@ export type ActivityType = Tables<"activities"> & {
   badges: Badge[];
 };
 
+export type ProjectPrizeItem = Tables<"project_prize_items">;
+
 export type Badge = Tables<"badges">;
 
 export type User = Tables<"users">;
