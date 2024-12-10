@@ -23,6 +23,55 @@ export const projectsService = {
   },
 
   /**
+   * プロジェクト一覧を取得する
+   * @returns Promise<ProjectType[]> - プロジェクト一覧
+   */
+  getProjects: async (): Promise<ProjectType[]> => {
+    const supabase = createSupabaseClient();
+    const { data, error } = await supabase
+      .from("projects")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+    return data;
+  },
+
+  /**
+   * プロジェクトを検索する
+   * @param query - 検索クエリ
+   * @returns Promise<ProjectType[]> - 検索結果のプロジェクト一覧
+   */
+  searchProjects: async (query: string): Promise<ProjectType[]> => {
+    const supabase = createSupabaseClient();
+    const { data, error } = await supabase
+      .from("projects")
+      .select("*")
+      .ilike("name", `%${query}%`)
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+    return data;
+  },
+
+  /**
+   * プロジェクトをIDで取得する
+   * @param id - プロジェクトID
+   * @returns Promise<ProjectType> - プロジェクト
+   */
+  getProjectById: async (id: string): Promise<ProjectType> => {
+    const supabase = createSupabaseClient();
+    const { data, error } = await supabase
+      .from("projects")
+      .select("*")
+      .eq("id", id)
+      .single();
+
+    if (error) throw error;
+    return data;
+  },
+
+  /**
    * プロジェクトの総配布ポイントを取得する
    * @param projectId - プロジェクトID
    * @returns Promise<number> - 総配布ポイント数
