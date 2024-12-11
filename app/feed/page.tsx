@@ -1,5 +1,9 @@
-import { CrossProjectFeed } from "@/features/feed/CrossProjectFeed";
+import { IntegratedFeed } from "@/features/feed/IntegratedFeed";
 
 export default function FeedPage() {
-  return <CrossProjectFeed />;
+  return (
+    <div className="container mx-auto py-6">
+      <IntegratedFeed />
+    </div>
+  );
 }

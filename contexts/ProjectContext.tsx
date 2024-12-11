@@ -5,7 +5,7 @@ import { createContext, useContext, ReactNode } from "react";
 import { useCurrentProject } from "@/hooks/useCurrentProject";
 
 type ProjectContextType = {
-  setCurrentProject: (project: ProjectType) => void;
+  setCurrentProject: (project: ProjectType | null) => void;
   currentProject: ProjectType | null;
   isLoading: boolean;
   error: Error | null;

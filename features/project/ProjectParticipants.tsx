@@ -56,21 +56,23 @@ export function ProjectParticipants({ feedItems }: Props) {
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle className="text-xl font-semibold text-muted-foreground/80">
-          関係者マップ
-        </CardTitle>
-        <Select value={selectedYear} onValueChange={handleYearChange}>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="年を選択" />
-          </SelectTrigger>
-          <SelectContent>
-            {Object.keys(participantsByYear).map((year) => (
-              <SelectItem key={year} value={year}>
-                {year}年
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-xl font-semibold text-muted-foreground/80">
+            関係者マップ
+          </CardTitle>
+          <Select value={selectedYear} onValueChange={handleYearChange}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="年を選択" />
+            </SelectTrigger>
+            <SelectContent>
+              {Object.keys(participantsByYear).map((year) => (
+                <SelectItem key={year} value={year}>
+                  {year}年
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </CardHeader>
       <CardContent className="relative">
         <div

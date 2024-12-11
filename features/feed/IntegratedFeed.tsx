@@ -5,89 +5,125 @@ import { FeedItemRenderer } from "@/features/feed";
 import { useFeedState } from "@/hooks/useFeedState";
 import { FeedSkeleton } from "./FeedSkeleton";
 import { useProjects } from "@/hooks/useProjects";
-import Link from "next/link";
-import { ArrowUpRight } from "lucide-react";
 import { useCurrentProjectContext } from "@/contexts/ProjectContext";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { ProjectOverviewCard } from "../project";
+import { ActivitySubmissionForm } from "../activity";
 
-type Props = {
-  projectSlug?: string;
-};
-
-export function IntegratedFeed({ projectSlug }: Props) {
+export function IntegratedFeed() {
+  const {
+    currentProject,
+    isLoading: isProjectLoading,
+    setCurrentProject,
+  } = useCurrentProjectContext();
   const { data: projects } = useProjects();
-  const { currentProject } = useCurrentProjectContext();
-
-  const projectId = projectSlug
-    ? projects?.find((project) => project.slug === projectSlug)?.id
-    : undefined;
-
   const {
     onPhotoClick,
     selectedActivityId,
     setSelectedActivityId,
     feedItems,
     isLoading,
-  } = useFeedState(projectId);
+  } = useFeedState(currentProject?.id);
 
   const selectedActivity = selectedActivityId
     ? feedItems.find((item) => item.id === selectedActivityId)
     : null;
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-semibold text-muted-foreground">
-          {projectSlug ? currentProject?.name : "最近"}の動向
-        </h2>
-        {projectSlug && (
-          <Link
-            href="/feed"
-            className="text-sm text-muted-foreground hover:text-primary flex items-center gap-1 group"
-          >
-            全プロジェクトの動向
-            <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-          </Link>
-        )}
-      </div>
-      {isLoading ? (
-        <FeedSkeleton />
-      ) : (
-        <>
-          {feedItems.map((item) => (
-            <FeedItemRenderer
-              key={item.id}
-              item={item}
-              onPhotoClick={onPhotoClick}
-              showProject={!projectSlug}
-            />
-          ))}
-          {selectedActivity && (
-            <PhotoAlbumModal
-              isOpen={true}
-              photos={
-                selectedActivity.user_contributions?.flatMap((contribution) =>
-                  contribution.user_photos.map((photo) => ({
-                    url: photo.url,
-                    user_id: photo.user_id,
-                  }))
-                ) || []
-              }
-              users={
-                selectedActivity.user_contributions?.map((contribution) => ({
-                  name: contribution.users.name || "",
-                  id: contribution.users.id || "",
-                  thumbnail_url: contribution.users.thumbnail_url || "",
-                })) || []
-              }
-              activityName={selectedActivity.title || ""}
-              date={selectedActivity.date}
-              location={selectedActivity.location}
-              onClose={() => setSelectedActivityId(null)}
-              activityId={selectedActivity.id}
-            />
-          )}
-        </>
+    <>
+      {currentProject && (
+        <ProjectOverviewCard
+          projectSlug={currentProject?.slug}
+          feedItems={feedItems}
+        />
       )}
-    </div>
+      <div className="space-y-4">
+        <div className="flex items-center justify-between mb-4">
+          {isProjectLoading ? (
+            <>
+              <div className="h-7 w-48 bg-muted animate-pulse rounded" />
+              <div className="h-10 w-[180px] bg-muted animate-pulse rounded" />
+            </>
+          ) : (
+            <>
+              <h2 className="text-xl font-semibold text-muted-foreground">
+                最近の動向
+              </h2>
+              <Select
+                value={currentProject?.id || "all"}
+                onValueChange={(value) => {
+                  if (value === "all") {
+                    setCurrentProject(null);
+                  } else {
+                    const selected = projects?.find((p) => p.id === value);
+                    if (selected) {
+                      setCurrentProject(selected);
+                    }
+                  }
+                }}
+              >
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="プロジェクトを選択" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">すべて</SelectItem>
+                  {projects?.map((project) => (
+                    <SelectItem key={project.id} value={project.id}>
+                      {project.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </>
+          )}
+        </div>
+        {isLoading ? (
+          <FeedSkeleton />
+        ) : (
+          <>
+            {feedItems.map((item) => (
+              <FeedItemRenderer
+                key={item.id}
+                item={item}
+                onPhotoClick={onPhotoClick}
+                showProject={!currentProject}
+              />
+            ))}
+            {selectedActivity && (
+              <PhotoAlbumModal
+                isOpen={true}
+                photos={
+                  selectedActivity.user_contributions?.flatMap((contribution) =>
+                    contribution.user_photos.map((photo) => ({
+                      url: photo.url,
+                      user_id: photo.user_id,
+                    }))
+                  ) || []
+                }
+                users={
+                  selectedActivity.user_contributions?.map((contribution) => ({
+                    name: contribution.users.name || "",
+                    id: contribution.users.id || "",
+                    thumbnail_url: contribution.users.thumbnail_url || "",
+                  })) || []
+                }
+                activityName={selectedActivity.title || ""}
+                date={selectedActivity.date}
+                location={selectedActivity.location}
+                onClose={() => setSelectedActivityId(null)}
+                activityId={selectedActivity.id}
+              />
+            )}
+          </>
+        )}
+        {currentProject && <ActivitySubmissionForm />}
+      </div>
+    </>
   );
 }

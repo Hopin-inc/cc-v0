@@ -1,28 +1,26 @@
 import { Card } from "@/components/ui";
 import Link from "next/link";
 import { ProjectStats } from "@/features/project";
-import { useCurrentProjectContext } from "@/contexts/ProjectContext";
 import { DEFAULT_PROJECT } from "@/config";
-import { useFeedState } from "@/hooks/useFeedState";
 import { ArrowUpRight } from "lucide-react";
+import { FeedItem } from "@/types";
 
 type ProjectPageProps = {
   projectSlug: string | undefined;
+  feedItems: FeedItem[];
 };
 
-export function ProjectOverviewCard({ projectSlug }: ProjectPageProps) {
-  const { currentProject } = useCurrentProjectContext();
-  const { feedItems } = useFeedState(
-    projectSlug ? currentProject?.id : undefined
-  );
-
+export function ProjectOverviewCard({
+  projectSlug,
+  feedItems,
+}: ProjectPageProps) {
   return (
     <div className="border-0 shadow-none mb-4">
       <div className="space-y-4 p-0">
         <ProjectStats feedItems={feedItems} />
         <div className="flex items-center justify-end pb-2">
           <Link
-            href={`/p/${currentProject?.slug || DEFAULT_PROJECT.slug}`}
+            href={`/p/${projectSlug || DEFAULT_PROJECT.slug}`}
             className="flex items-center gap-1 text-sm text-muted-foreground hover:text-primary group transition-transform duration-200"
           >
             プロジェクト詳細
