@@ -9,7 +9,7 @@ import Link from "next/link";
 import { AvatarGroup } from "@/components/ui/avatar-group";
 import { formatDate } from "@/utils/date";
 import { formatContent } from "@/utils/formatContent";
-import { ArrowUpRight, MapPin } from "lucide-react";
+import { ArrowUpRight, MapPin, Clock } from "lucide-react";
 import { FeedItem } from "@/types";
 
 type Props = {
@@ -28,9 +28,31 @@ export function ProjectTimeline({ feedItems }: Props) {
       </CardHeader>
       <CardContent>
         {timelineEvents.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-8 text-muted-foreground">
-            <p>まだ活動記録がありません</p>
-            <p className="text-sm">プロジェクトの活動が記録されると、ここに表示されます</p>
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <div className="relative mb-8">
+              <div className="bg-muted/30 p-4 rounded-full">
+                <Clock className="h-8 w-8 text-muted-foreground/60" />
+              </div>
+              <div className="absolute -left-[6px] top-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full bg-gray-300 border-2 border-background"></div>
+              <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-border -translate-x-1/2"></div>
+            </div>
+            <h3 className="text-lg font-semibold text-muted-foreground mb-2">
+              まだ活動記録がありません
+            </h3>
+            <p className="text-sm text-muted-foreground/60 max-w-sm">
+              プロジェクトの活動を登録すると、時系列で表示されます。
+              <br />
+              最初の活動を記録して、プロジェクトの歴史を始めましょう！
+            </p>
+            <div className="mt-6 flex flex-col items-center gap-4">
+              <div className="w-[280px] h-[2px] bg-border relative">
+                <div className="absolute -left-[6px] top-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full bg-gray-300 border-2 border-background"></div>
+                <div className="absolute -right-[6px] top-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full bg-gray-300 border-2 border-background"></div>
+              </div>
+              <p className="text-sm text-muted-foreground/60 italic">
+                ここに活動の歴史が刻まれていきます
+              </p>
+            </div>
           </div>
         ) : (
           <div className="relative pl-0 before:content-[''] before:absolute before:left-0 before:top-2 before:bottom-2 before:w-0.5 before:bg-border">

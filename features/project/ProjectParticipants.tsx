@@ -18,6 +18,7 @@ import { useFeedState } from "@/hooks/useFeedState";
 import { generateParticipantsFromFeed } from "@/utils/mapParticipants";
 import { FeedItem, ParticipantsByYear } from "@/types";
 import { useCurrentProjectContext } from "@/contexts/ProjectContext";
+import { Users } from "lucide-react";
 
 type Props = {
   feedItems: FeedItem[];
@@ -31,17 +32,28 @@ export function ProjectParticipants({ feedItems }: Props) {
   );
 
   // 参加者がいない場合はempty stateを表示
-  if (Object.keys(participantsByYear).length === 0) {
+  if (!participantsByYear || Object.keys(participantsByYear).length === 0) {
     return (
-      <Card>
+      <Card className="w-full">
         <CardHeader>
-          <CardTitle className="text-xl font-semibold text-muted-foreground/80">
-            関係者マップ
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-xl font-semibold text-muted-foreground/80">
+              関係者マップ
+            </CardTitle>
+          </div>
         </CardHeader>
-        <CardContent className="flex flex-col items-center justify-center py-8 text-muted-foreground">
-          <p>まだ関係者がいません</p>
-          <p className="text-sm">プロジェクトに関係者が追加されると、ここに表示されます</p>
+        <CardContent className="flex flex-col items-center justify-center py-12 text-center">
+          <div className="bg-muted/30 p-4 rounded-full mb-4">
+            <Users className="h-8 w-8 text-muted-foreground/60" />
+          </div>
+          <h3 className="text-lg font-semibold text-muted-foreground mb-2">
+            まだ関係者がいません
+          </h3>
+          <p className="text-sm text-muted-foreground/60 max-w-sm">
+            プロジェクトに参加したメンバーが表示されます。
+            <br />
+            プロジェクトに参加して最初の関係者になりましょう！
+          </p>
         </CardContent>
       </Card>
     );
