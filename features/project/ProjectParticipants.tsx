@@ -26,10 +26,45 @@ type Props = {
 export function ProjectParticipants({ feedItems }: Props) {
   const router = useRouter();
   const { currentProject } = useCurrentProjectContext();
-  const participantsByYear = generateParticipantsFromFeed(
-    currentProject,
-    feedItems
+  const [participantsByYear, setParticipantsByYear] = useState<ParticipantsByYear | null>(null);
+  const [selectedYear, setSelectedYear] = useState<string>("2024");
+
+  const handleNodeClick = useCallback(
+    (userId: string) => {
+      router.push(`/users/${userId}`);
+    },
+    [router]
   );
+
+  const handleYearChange = useCallback((year: string) => {
+    setSelectedYear(year);
+  }, []);
+
+  const { networkRef } = useProjectParticipantsNetwork({
+    participantsByYear: participantsByYear || {},
+    selectedYear,
+    onNodeClick: handleNodeClick,
+  });
+
+  useEffect(() => {
+    // プロジェクト切り替え時にデータをリセット
+    setParticipantsByYear(null);
+    
+    if (!feedItems || !currentProject) return;
+    
+    const participants = generateParticipantsFromFeed(currentProject, feedItems);
+    setParticipantsByYear(participants);
+  }, [feedItems, currentProject]);
+
+  useEffect(() => {
+    // プロジェクト切り替え時に年も更新
+    if (participantsByYear) {
+      const years = Object.keys(participantsByYear);
+      if (years.length > 0) {
+        setSelectedYear(years[0]);
+      }
+    }
+  }, [participantsByYear]);
 
   // 参加者がいない場合はempty stateを表示
   if (!participantsByYear || Object.keys(participantsByYear).length === 0) {
@@ -58,27 +93,6 @@ export function ProjectParticipants({ feedItems }: Props) {
       </Card>
     );
   }
-
-  const [selectedYear, setSelectedYear] = useState<string>(
-    Object.keys(participantsByYear)[0] || "2024"
-  );
-
-  const handleNodeClick = useCallback(
-    (userId: string) => {
-      router.push(`/u/${userId}`);
-    },
-    [router]
-  );
-
-  const { networkRef } = useProjectParticipantsNetwork({
-    participantsByYear,
-    selectedYear,
-    onNodeClick: handleNodeClick,
-  });
-
-  const handleYearChange = useCallback((year: string) => {
-    setSelectedYear(year);
-  }, []);
 
   return (
     <Card className="w-full">
