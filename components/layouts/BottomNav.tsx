@@ -14,7 +14,7 @@ export function BottomNav() {
       name: "ホーム",
       href: "/",
       icon: Home,
-      current: pathname.startsWith("/feed"),
+      current: pathname === "/",
     },
     {
       name: "探す",

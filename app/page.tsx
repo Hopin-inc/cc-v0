@@ -1,6 +1,9 @@
-"use client";
-import { redirect } from "next/navigation";
+import { IntegratedFeed } from "@/features/feed/IntegratedFeed";
 
-export default function Home() {
-  redirect("/feed");
+export default function FeedPage() {
+  return (
+    <div className="container mx-auto py-6">
+      <IntegratedFeed />
+    </div>
+  );
 }
