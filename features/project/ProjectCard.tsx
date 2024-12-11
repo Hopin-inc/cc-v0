@@ -22,7 +22,7 @@ export function ProjectCard({ project, feedItems }: ProjectCardProps) {
   const totalParticipants = calculateTotalParticipants(projectFeedItems);
 
   return (
-    <Link href={`/p/${project.id}`} className="group">
+    <Link href={`/p/${project.slug}`} className="group">
       <Card className="relative p-6 hover:bg-muted/50 transition-all duration-200 hover:shadow-md">
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between">
