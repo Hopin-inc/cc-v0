@@ -29,6 +29,7 @@ export type UserContribution = Tables<"user_contributions"> & {
 
 export type UserProfile = User & {
   badges: Badge[];
+  projects: ProjectType[];
 };
 
 export type Comment = Tables<"user_activity_comments"> & {

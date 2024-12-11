@@ -6,6 +6,12 @@ export type UpdateUserProfileInput = {
   bio?: string;
 };
 
+const USER_SELECT_QUERY = `
+  *,
+  badges (*),
+  projects (*)
+`;
+
 export const usersService = {
   getCurrentUser: async (): Promise<UserProfile> => {
     const supabase = createSupabaseClient();
@@ -19,12 +25,7 @@ export const usersService = {
 
     const { data, error } = await supabase
       .from("users")
-      .select(
-        `
-        *,
-        badges (*)
-      `
-      )
+      .select(USER_SELECT_QUERY)
       .eq("id", user.id)
       .single();
 
@@ -39,7 +40,7 @@ export const usersService = {
     const supabase = createSupabaseClient();
     const { data, error } = await supabase
       .from("users")
-      .select("*, badges (*)")
+      .select(USER_SELECT_QUERY)
       .eq("id", userId)
       .single();
 
@@ -78,10 +79,7 @@ export const usersService = {
     const supabase = createSupabaseClient();
     const { data, error } = await supabase
       .from("users")
-      .select(`
-        *,
-        badges (*)
-      `)
+      .select(USER_SELECT_QUERY)
       .order("total_points", { ascending: false });
 
     if (error) {

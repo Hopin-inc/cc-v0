@@ -1,13 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ProjectType } from "@/types";
 import { projectsService } from "@/services/projects";
 import { useCache } from "./useCache";
+import { useCurrentUserContext } from "@/contexts/UserContext";
 
 export const useProjects = () => {
   const [data, setData] = useState<ProjectType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const { getCachedData } = useCache<ProjectType[]>("projects");
+  const { currentUser } = useCurrentUserContext();
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -28,8 +30,22 @@ export const useProjects = () => {
     fetchProjects();
   }, []);
 
+  const sortedProjects = useMemo(() => {
+    if (!data) return [];
+    // ユーザーに紐づいているプロジェクトを先頭にする
+    const userProjectIds = currentUser?.projects?.map((p) => p.id) ?? [];
+    const sortedProjects = data.sort((a, b) => {
+      const isUserProjectA = userProjectIds.includes(a.id) ?? false;
+      const isUserProjectB = userProjectIds.includes(b.id) ?? false;
+      if (isUserProjectA && !isUserProjectB) return -1;
+      if (!isUserProjectA && isUserProjectB) return 1;
+      return 0;
+    });
+    return sortedProjects;
+  }, [data, currentUser?.projects]);
+
   return {
-    data,
+    data: sortedProjects,
     isLoading,
     error,
   };
