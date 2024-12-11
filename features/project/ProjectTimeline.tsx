@@ -27,77 +27,84 @@ export function ProjectTimeline({ feedItems }: Props) {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="relative pl-0 before:content-[''] before:absolute before:left-0 before:top-2 before:bottom-2 before:w-0.5 before:bg-border">
-          {timelineEvents.map((event, index) => (
-            <div key={index} className="mb-8 relative">
-              <div className="absolute -left-[6px] top-0 w-3.5 h-3.5 rounded-full bg-gray-300 border-2 border-background"></div>
-              <div className="pl-4">
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-sm font-medium text-muted-foreground">
-                    {formatDate(event.date)}
-                  </span>
-                  {event.location && (
-                    <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                      <MapPin className="w-3.5 h-3.5" />
-                      <span>{event.location}</span>
-                    </div>
-                  )}
-                </div>
-                <Link
-                  href={`/activities/${event.id}`}
-                  className="group block p-4 rounded-lg hover:bg-muted/50 transition-colors"
-                >
-                  <div className="flex items-center gap-2">
-                    {event.icon && (
-                      <span className="text-lg" role="img" aria-label="icon">
-                        {event.icon}
-                      </span>
-                    )}
-                    <h3 className="text-lg font-semibold text-foreground group-hover:text-primary">
-                      {event.title}
-                    </h3>
-                    <ArrowUpRight className="opacity-0 group-hover:opacity-100 w-4 h-4 text-primary transition-opacity" />
-                  </div>
-                  <p className="text-sm text-muted-foreground mt-1 whitespace-pre-wrap">
-                    {formatContent(event.description)}
-                  </p>
-                  {event.images.length > 0 && (
-                    <ScrollArea className="w-full whitespace-nowrap rounded-md border mt-4">
-                      <div className="flex w-max space-x-4 p-4">
-                        {event.images.map((image, imageIndex) => (
-                          <div
-                            key={imageIndex}
-                            className="overflow-hidden rounded-md shrink-0 w-[120px] h-[150px]"
-                          >
-                            <Image
-                              src={image}
-                              alt={`Image ${imageIndex + 1}`}
-                              className="object-cover w-full h-full"
-                              width={120}
-                              height={150}
-                            />
-                          </div>
-                        ))}
+        {timelineEvents.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-8 text-muted-foreground">
+            <p>まだ活動記録がありません</p>
+            <p className="text-sm">プロジェクトの活動が記録されると、ここに表示されます</p>
+          </div>
+        ) : (
+          <div className="relative pl-0 before:content-[''] before:absolute before:left-0 before:top-2 before:bottom-2 before:w-0.5 before:bg-border">
+            {timelineEvents.map((event, index) => (
+              <div key={index} className="mb-8 relative">
+                <div className="absolute -left-[6px] top-0 w-3.5 h-3.5 rounded-full bg-gray-300 border-2 border-background"></div>
+                <div className="pl-4">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-sm font-medium text-muted-foreground">
+                      {formatDate(event.date)}
+                    </span>
+                    {event.location && (
+                      <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                        <MapPin className="w-3.5 h-3.5" />
+                        <span>{event.location}</span>
                       </div>
-                      <ScrollBar orientation="horizontal" />
-                    </ScrollArea>
-                  )}
-                  {event.participants.length > 0 && (
-                    <AvatarGroup
-                      users={event.participants.map((p) => ({
-                        id: p.userId,
-                        name: p.name,
-                        thumbnailUrl: p.thumbnailUrl,
-                      }))}
-                      limit={6}
-                      className="mt-4"
-                    />
-                  )}
-                </Link>
+                    )}
+                  </div>
+                  <Link
+                    href={`/activities/${event.id}`}
+                    className="group block p-4 rounded-lg hover:bg-muted/50 transition-colors"
+                  >
+                    <div className="flex items-center gap-2">
+                      {event.icon && (
+                        <span className="text-lg" role="img" aria-label="icon">
+                          {event.icon}
+                        </span>
+                      )}
+                      <h3 className="text-lg font-semibold text-foreground group-hover:text-primary">
+                        {event.title}
+                      </h3>
+                      <ArrowUpRight className="opacity-0 group-hover:opacity-100 w-4 h-4 text-primary transition-opacity" />
+                    </div>
+                    <p className="text-sm text-muted-foreground mt-1 whitespace-pre-wrap">
+                      {formatContent(event.description)}
+                    </p>
+                    {event.images.length > 0 && (
+                      <ScrollArea className="w-full whitespace-nowrap rounded-md border mt-4">
+                        <div className="flex w-max space-x-4 p-4">
+                          {event.images.map((image, imageIndex) => (
+                            <div
+                              key={imageIndex}
+                              className="overflow-hidden rounded-md shrink-0 w-[120px] h-[150px]"
+                            >
+                              <Image
+                                src={image}
+                                alt={`Image ${imageIndex + 1}`}
+                                className="object-cover w-full h-full"
+                                width={120}
+                                height={150}
+                              />
+                            </div>
+                          ))}
+                        </div>
+                        <ScrollBar orientation="horizontal" />
+                      </ScrollArea>
+                    )}
+                    {event.participants.length > 0 && (
+                      <AvatarGroup
+                        users={event.participants.map((p) => ({
+                          id: p.userId,
+                          name: p.name,
+                          thumbnailUrl: p.thumbnailUrl,
+                        }))}
+                        limit={6}
+                        className="mt-4"
+                      />
+                    )}
+                  </Link>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </CardContent>
     </Card>
   );

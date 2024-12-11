@@ -10,18 +10,25 @@ export const useFeedState = (projectId?: string) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const [feedItems, setFeedItems] = useState<FeedItem[]>([]);
-  const { getCachedData, invalidateCache } = useCache<FeedItem[]>(
-    projectId ? `feed-items-${projectId}` : "feed-items-all"
+  const {
+    getCachedData: getCachedProjectActivities,
+    invalidateCache: invalidateProjectCache,
+  } = useCache<FeedItem[]>(
+    projectId ? `feed-items-${projectId}` : "project-activities"
   );
+  const {
+    getCachedData: getCachedFeedItems,
+    invalidateCache: invalidateFeedCache,
+  } = useCache<FeedItem[]>("feed-items");
 
   const loadFeedItems = useCallback(async () => {
     setIsLoading(true);
     try {
-      const data = await getCachedData(() =>
-        projectId
-          ? activitiesService.fetchProjectActivities(projectId)
-          : activitiesService.fetchFeedItems()
-      );
+      const data = await (projectId
+        ? getCachedProjectActivities(() =>
+            activitiesService.fetchProjectActivities(projectId)
+          )
+        : getCachedFeedItems(() => activitiesService.fetchFeedItems()));
       setFeedItems(data);
     } catch (err) {
       setError(err as Error);
@@ -32,7 +39,7 @@ export const useFeedState = (projectId?: string) => {
 
   useEffect(() => {
     loadFeedItems();
-  }, [loadFeedItems]);
+  }, [projectId]);
 
   const onPhotoClick = (activityId: string) => {
     setSelectedActivityId(activityId);
@@ -46,7 +53,11 @@ export const useFeedState = (projectId?: string) => {
     setFeedItems,
     isLoading,
     refetch: () => {
-      invalidateCache();
+      if (projectId) {
+        invalidateProjectCache();
+      } else {
+        invalidateFeedCache();
+      }
       return loadFeedItems();
     },
   };

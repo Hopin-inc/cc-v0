@@ -30,6 +30,23 @@ export function ProjectParticipants({ feedItems }: Props) {
     feedItems
   );
 
+  // 参加者がいない場合はempty stateを表示
+  if (Object.keys(participantsByYear).length === 0) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-xl font-semibold text-muted-foreground/80">
+            関係者マップ
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col items-center justify-center py-8 text-muted-foreground">
+          <p>まだ関係者がいません</p>
+          <p className="text-sm">プロジェクトに関係者が追加されると、ここに表示されます</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
   const [selectedYear, setSelectedYear] = useState<string>(
     Object.keys(participantsByYear)[0] || "2024"
   );
@@ -50,8 +67,6 @@ export function ProjectParticipants({ feedItems }: Props) {
   const handleYearChange = useCallback((year: string) => {
     setSelectedYear(year);
   }, []);
-
-  if (!participantsByYear) return null;
 
   return (
     <Card className="w-full">

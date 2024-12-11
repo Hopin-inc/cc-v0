@@ -30,4 +30,5 @@ export const userProfile: UserProfile = {
   total_points: 1500,
   available_points: 500,
   created_at: "2023-05-20",
+  projects: [],
 };
