@@ -1,125 +1,111 @@
+// Use DBML to define your database structure
 // Docs: https://dbml.dbdiagram.io/docs
 
-Enum activity_type {
-  contribution
+Table projects {
+  id uuid [pk, default: `gen_random_uuid()`]
+  created_at timestamp [not null, default: `now()`]
+  name text [not null]
+  description text
+  Note: '団体や活動などの母体を表すテーブル'
 }
 
-Enum contribution_status {
-  claimed
+Table activity_tasks {
+  id uuid [pk, default: `gen_random_uuid()`]
+  name varchar
+  data date
+  location varchar
+  capacity integer [not null, default: 0]
+  parent_task_id uuid [not null, ref: > activities.id]
+  project_id uuid [not null, ref: > projects.id]
+  created_at timestamp [not null, default: `now()`]
+  Note: '活動に紐づく最小のタスクを表すテーブル'
 }
 
-Enum transaction_type {
-  earn
+Table categories {
+  id uuid [pk, default: `gen_random_uuid()`]
+  name varchar [not null, unique]
+  created_at timestamp [not null, default: `now()`]
+  Note: '活動分野を表すテーブル'
 }
 
-Enum user_role {
-  admin
-  member
+Table activity_categories {
+  id uuid [pk, default: `gen_random_uuid()`]
+  activity_id uuid [not null, ref: > activities.id]
+  category_id uuid [not null, ref: > categories.id]
+  level integer
+  created_at timestamp [not null, default: `now()`]
+  Note: '活動分野と活動の関連テーブル'
 }
 
 Table activities {
   id uuid [pk, default: `gen_random_uuid()`]
+  name varchar [not null, unique]
+  project_id uuid [not null, ref: > projects.id]
   created_at timestamp [not null, default: `now()`]
-  title text [not null]
-  date timestamp
-  location text
-  content text
-  type activity_type [not null, default: 'contribution']
-  project_id uuid [not null, ref: > project.id]
+  Note: '活動のテーブル'
+}
+
+Table user_activity_tasks {
+  id uuid [pk, default: `gen_random_uuid()`]
+  user_id uuid [not null, ref: > users.id]
+  task_id uuid [not null, ref: > activity_tasks.id]
+  created_at timestamp [not null, default: `now()`]
+  Note: 'タスクとユーザーの関連テーブル'
+}
+
+enum roles {
+  admin
+  user
+}
+
+Table users {
+  id uuid [pk, default: `gen_random_uuid()`]
+  name varchar
+  role roles [not null, default: 'user']
+  total_points integer [not null, default: 0]
+  available_points integer [not null, default: 0]
+  created_at timestamp [not null, default: `now()`]
+  Note: 'ユーザーテーブル'
+}
+
+Table user_badges {
+  id uuid [pk, default: `gen_random_uuid()`]
+  level integer [not null, default: 1]
+  user_id uuid [not null, ref: > users.id]
+  badge_id uuid [not null, ref: > badges.id]
+  created_at timestamp [not null, default: `now()`]
+  Note: 'ユーザーとバッジの関連を表すテーブル'
 }
 
 Table badges {
   id uuid [pk, default: `gen_random_uuid()`]
+  name varchar [not null, unique]
   created_at timestamp [not null, default: `now()`]
-  name text [not null]
-  value text [not null]
+  Note: 'バッジを表すテーブル'
 }
 
-Table contribution_types {
-  id uuid [pk, default: `gen_random_uuid()`]
-  created_at timestamp [not null, default: `now()`]
-  name text [not null]
-  value text [not null]
-  point bigint [not null, default: 50]
-}
-
-Table notifications {
-  id bigint [pk, increment]
-  created_at timestamp [not null, default: `now()`]
-  user_id uuid [not null, ref: > users.id]
-  is_read boolean [not null, default: false]
-  message text
-  type text [not null]
-  url text
-  project_id uuid [not null, ref: > project.id]
-}
-
-Table project {
-  id uuid [pk, default: `gen_random_uuid()`]
-  created_at timestamp [not null, default: `now()`]
-  name text [not null]
-  description text
-}
-
-Table project_prize_items {
-  id bigint [pk, increment]
-  created_at timestamp [not null, default: `now()`]
-  point bigint [not null, default: 50]
-  thumbnail_url text
-  project_id uuid [not null, ref: > project.id]
-  description text
-  name text [not null]
-}
-
-Table user_badges {
-  created_at timestamp [not null, default: `now()`]
-  user_id uuid [pk, ref: > users.id]
-  badge_id uuid [pk, ref: > badges.id]
-}
-
-Table user_contributions {
-  id uuid [pk, default: `gen_random_uuid()`]
-  created_at timestamp [not null, default: `now()`]
-  date timestamp
-  type_id uuid [not null, ref: > contribution_types.id]
-  status contribution_status [not null, default: 'claimed']
-  user_id uuid [not null, ref: > users.id]
-  activity_id uuid [ref: > activities.id]
-  project_id uuid [not null, ref: > project.id]
-}
-
-Table user_photos {
-  id uuid [pk, default: `gen_random_uuid()`]
-  created_at timestamp [not null, default: `now()`]
-  url text [not null]
-  user_id uuid [not null, ref: > users.id]
-  user_contibution_id uuid [not null, ref: > user_contributions.id]
-  project_id uuid [not null, ref: > project.id]
+enum transaction_type {
+  earn
+  spend
 }
 
 Table user_point_transactions {
   id uuid [pk, default: `gen_random_uuid()`]
-  created_at timestamp [not null, default: `now()`]
-  project_id uuid [not null, ref: > project.id]
-  user_id uuid [not null, ref: > users.id]
-  project_prize_id bigint [ref: > project_prize_items.id]
-  point bigint [not null, default: 0]
+  amount integer [not null]
   type transaction_type [not null, default: 'earn']
+  user_id uuid [not null, ref: > users.id]
+  project_id uuid [not null, ref: > projects.id]
+  task_id uuid [ref: > activity_tasks.id]
+  project_prize_item_id uuid [ref: > project_prize_items.id]
+  created_at timestamp [not null, default: `now()`]
+  Note: 'ユーザーとポイントの関連テーブル（ポイント履歴）'
 }
 
-Table user_projects {
-  user_id uuid [pk, ref: > users.id]
+Table project_prize_items {
+  id uuid [pk, default: `gen_random_uuid()`]
+  project_id uuid [not null, ref: > projects.id]
+  name varchar [not null]
+  description text
   created_at timestamp [not null, default: `now()`]
-  project_id uuid [pk, ref: > project.id]
-}
-
-Table users {
-  id uuid [pk]
-  name text
-  created_at timestamp [not null, default: `now()`]
-  thumbnail_url text
-  bio text
-  total_points bigint [not null, default: 0]
-  available_points bigint [not null, default: 0]
-  role user_role [not null, default: 'admin']
+  Note: '特典を表すテーブル'
 }
